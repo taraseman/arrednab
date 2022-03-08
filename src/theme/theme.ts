@@ -3,19 +3,13 @@ import { extendTheme } from "@chakra-ui/react";
 const theme = extendTheme({
   colors: {
     primary: {
-      100: "#EDFEFD",
-      200: "#Dcf9f9",
-      400: "#1DC7B8",
-      500: "#64D3C8",
-      600: "#1DC7B8",
-      700: "#1DC7B9",
+      500: "#4C6FFF",
     },
     secondary: {
       500: "#1DC7B8",
     },
     grey: {
-      10: "#F5F7F7",
-      50: "#FAFAFC",
+      50: "#E5E5E5",
       100: "#F5F6FA",
       150: "#E3E7F2",
       170: "#c7c7c7",
@@ -41,7 +35,7 @@ const theme = extendTheme({
     white: "#FFFFFF",
   },
   fonts: {
-    body: "Rubik",
+    body: "Roboto",
   },
   fontSizes: {
     xs: "0.75rem", // 12px
@@ -66,10 +60,15 @@ const theme = extendTheme({
     },
   },
   components: {
+    Button: {
+      baseStyle: {
+        borderRadius: '3px'
+      }
+    },
     Text: {
       baseStyle: {
         fontSize: "md",
-        fontFamily: "Rubik",
+        fontFamily: "Roboto",
       },
     },
     Badge: {
