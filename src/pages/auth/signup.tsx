@@ -81,11 +81,14 @@ interface SignUpForm {
   confirmPassword: string;
 }
 
+
 const SignUp = () => {
   const form = useForm<SignUpForm>({
     resolver: yupResolver<yup.AnyObjectSchema>(schema()),
     mode: "onChange",
   });
+
+  
   return (
     <Box h="100vh" w="100%" bg="white">
       <Flex align="center" justify="center" h="100vh">
