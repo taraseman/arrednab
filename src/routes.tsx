@@ -8,7 +8,7 @@ import PageLoading from 'components/loading/page-loading';
 
 const Login = lazy(() => import("pages/auth/login"));
 const Page404 = lazy(() => import("pages/Page404"));
-// const SignUp = lazy(() => import('./pages/auth/signup'));
+const SignUp = lazy(() => import('./pages/auth/signup'));
 // const SignUpCompany = lazy(() => import('pages/auth/signup-company'));
 
 function Routes() {
@@ -29,18 +29,14 @@ function Routes() {
       <Box h="calc(100% - 3.5rem)">
         <Switch location={location}>
           <Route path="/signup" exact>
-            {/* <SignUp /> */}
+            <SignUp />
           </Route>
-          <Route path={['/signup/company', '/signup/company/:status']} exact>
-            {/* <SignUpCompany /> */}
-          </Route>
-          <Route path={['/login', '/login/:status']} exact>
+          
+          <Route path="/login" exact>
             <Login />
           </Route>
-          <Route path="/error404">
-            <Page404 />
-          </Route>
-          <Route>
+          
+          <Route path={['/', '/dashboard']}>
             <Flex justifyContent="center" w="100%">
               <Grid
                 templateColumns="max-content minmax(0, 1fr)"
@@ -51,12 +47,18 @@ function Routes() {
                 {/* <LeftMenu /> */}
                 <Box pb={7} w="100%">
                   <Suspense fallback={<PageLoading />}>
+                    fr
                     {/* <PageRoutes /> */}
                   </Suspense>
                 </Box>
               </Grid>
             </Flex>
           </Route>
+
+          <Route path="/error404">
+            <Page404 />
+          </Route>
+          
         </Switch>
       </Box>
     </>

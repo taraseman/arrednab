@@ -44,7 +44,7 @@ const schema = () =>
       .max(20, "Password is too long"),
   });
 
-export function Login() {
+const Login = () => {
   const form = useForm<LoginForm>({
     resolver: yupResolver<yup.AnyObjectSchema>(schema()),
     mode: "onChange",
@@ -275,6 +275,6 @@ export function Login() {
       </Flex>
     </Box>
   );
-}
+};
 
 export default Login;

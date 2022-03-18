@@ -1,7 +1,7 @@
 import { Heading, Text, Button, Flex } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 
-function Page404() {
+const Page404 = () => {
   const history = useHistory();
 
   return (
@@ -33,6 +33,6 @@ function Page404() {
       </Button>
     </Flex>
   );
-}
+};
 
 export default Page404;
