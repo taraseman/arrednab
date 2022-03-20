@@ -8,6 +8,7 @@ import {
   IconButton,
   VStack,
   useDisclosure,
+  useToast,
   Tooltip,
   UnorderedList,
   ListItem,
@@ -16,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useHistory } from "react-router-dom";
 import * as yup from "yup";
 import { Link as RouterLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -30,6 +32,12 @@ import { emailRegex } from "config/constants";
 import { ReactComponent as GoogleLogo } from "assets/img/icons/google-icon.svg";
 import { ReactComponent as FacebookLogo } from "assets/img/icons/facebook-icon.svg";
 import signupImageUrl from "assets/img/sign-up.png";
+
+import { useDispatch } from "react-redux";
+import { setUser } from "service/auth/authSlice";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
+// import { database } from "firebase";
 
 const schema = () =>
   yup.object().shape({
@@ -76,19 +84,56 @@ interface SignUpForm {
   firstName: string;
   lastName: string;
   email: string;
-  phone?: string;
   password: string;
   confirmPassword: string;
 }
 
+interface UserAuth {
+  email: string;
+  accessToken: string;
+  uid: string;
+}
 
 const SignUp = () => {
+  const history = useHistory();
+  const toast = useToast();
+
   const form = useForm<SignUpForm>({
     resolver: yupResolver<yup.AnyObjectSchema>(schema()),
     mode: "onChange",
   });
 
-  
+  const onSubmit = (values: SignUpForm) => {
+    const db = getDatabase();
+    const auth = getAuth();
+
+    createUserWithEmailAndPassword(auth, values.email, values.password)
+      .then(() => {
+        const user = auth.currentUser;
+
+        if(!user) return;
+        set(ref(db, 'users/' + user.uid), {
+          id: user.uid,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+          lastLogin: Date.now(),
+        });
+
+        toast({
+          status: "success",
+          description: "User registered successfully",
+        });
+        history.push("/login");
+      })
+      .catch((error) => {
+        toast({
+          status: "error",
+          description: error.message,
+        });
+      });
+  };
+
   return (
     <Box h="100vh" w="100%" bg="white">
       <Flex align="center" justify="center" h="100vh">
@@ -113,7 +158,7 @@ const SignUp = () => {
                 as="form"
                 spacing={4}
                 align="flex-start"
-                onSubmit={form.handleSubmit(() => {})}
+                onSubmit={form.handleSubmit(onSubmit)}
               >
                 <TextField
                   name="firstName"
@@ -121,8 +166,18 @@ const SignUp = () => {
                   placeholder="Enter your First Name"
                   trim
                 />
-                <TextField name="lastName" label="Last Name" placeholder="Enter your Last Name" trim />
-                <TextField name="email" label="Contact Email" placeholder="Enter your email" trim />
+                <TextField
+                  name="lastName"
+                  label="Last Name"
+                  placeholder="Enter your Last Name"
+                  trim
+                />
+                <TextField
+                  name="email"
+                  label="Contact Email"
+                  placeholder="Enter your email"
+                  trim
+                />
 
                 <TextField
                   name="password"
@@ -173,11 +228,10 @@ const SignUp = () => {
                   Already have an account? Log In
                 </Link>
                 <Button
-                w="100%"
-                mb="30px"
+                  w="100%"
+                  mb="30px"
                   type="submit"
-                  disabled={
-                    !form.formState.isValid}
+                  disabled={!form.formState.isValid}
                   //   disabled={
                   //     !form.formState.isValid || signupLoading || companyLoading
                   //   }
@@ -187,7 +241,7 @@ const SignUp = () => {
                 >
                   Submit
                 </Button>
-                
+
                 <Flex
                   w="100%"
                   justifyContent="space-between"
@@ -234,8 +288,6 @@ const SignUp = () => {
                     target="_self"
                   />
                 </Flex>
-
-
               </VStack>
             </FormProvider>
           </Box>

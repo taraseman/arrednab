@@ -1,14 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Box,
-  Container,
   Flex,
   Button,
   HStack,
   Image,
   Heading,
   Text,
-  Divider,
   IconButton,
   VStack,
   Link,
@@ -17,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import TextField from "components/common/inputs/TextField";
 import loginImageUrl from "assets/img/login.png";
@@ -25,10 +24,13 @@ import * as yup from "yup";
 import { ReactComponent as GoogleLogo } from "assets/img/icons/google-icon.svg";
 import { ReactComponent as FacebookLogo } from "assets/img/icons/facebook-icon.svg";
 
+import { useDispatch } from "react-redux";
+import { setUser } from "service/auth/authSlice";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref, update } from "firebase/database";
+
 interface LoginForm {
   email: string;
-  phoneNumber: string;
-  emailOrPhone: string;
   password: string;
 }
 const schema = () =>
@@ -45,6 +47,38 @@ const schema = () =>
   });
 
 const Login = () => {
+  const history = useHistory();
+
+  const onSubmit = ({ email, password }: LoginForm) => {
+    const db = getDatabase();
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then(({ user }) => {
+        dispatch(
+          setUser({
+            email: user.email,
+            token: user.accessToken,
+            refreshToken: user.refreshToken,
+            id: user.uid,
+          })
+        );
+        update(ref(db, 'users/' + user.uid), {
+          lastLogin: Date.now(),
+        });
+        toast({
+          status: "success",
+          description: "User logged successfully",
+        });
+        history.push('/');
+      })
+      .catch((error) => {
+        toast({
+          status: "error",
+          description: error.message,
+        });
+      });
+  };
+
   const form = useForm<LoginForm>({
     resolver: yupResolver<yup.AnyObjectSchema>(schema()),
     mode: "onChange",
@@ -53,7 +87,7 @@ const Login = () => {
   // const googleLink = getCognitoLink('Google');
   // const appleLink = getCognitoLink('SignInWithApple');
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   // const [login, { isLoading: loginLoading }] = useLoginMutation();
   // const [loginSocial, { isLoading: loginSocialLoading }] =
   //   useLoginSocialMutation();
@@ -67,17 +101,6 @@ const Login = () => {
   const forgotPasswordModal = useDisclosure();
   const additionalInfoModal = useDisclosure();
   // const togglePageLoading = usePageLoading();
-
-  const firstMount = useRef<boolean>(true);
-  useEffect(() => {
-    // hack to validate autofill values
-    if (!firstMount.current) {
-      return;
-    } else {
-      firstMount.current = false;
-    }
-    setTimeout(() => form.reset({}, { keepValues: true }), 0);
-  }, [form]);
 
   const [errorUser, setErrorUser] = useState(null);
 
@@ -144,6 +167,17 @@ const Login = () => {
   //   [confirmModal, dispatch, login, onLoginError]
   // );
 
+  const firstMount = useRef<boolean>(true);
+  useEffect(() => {
+    // hack to validate autofill values
+    if (!firstMount.current) {
+      return;
+    } else {
+      firstMount.current = false;
+    }
+    setTimeout(() => form.reset({}, { keepValues: true }), 0);
+  }, [form]);
+
   return (
     <Box h="100vh" w="100%" bg="white">
       <Flex align="center" justify="center" h="100vh">
@@ -168,7 +202,7 @@ const Login = () => {
                 as="form"
                 spacing={4}
                 align="flex-start"
-                // onSubmit={form.handleSubmit(onSubmit)}
+                onSubmit={form.handleSubmit(onSubmit)}
               >
                 <TextField
                   name="email"
