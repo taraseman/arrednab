@@ -7,37 +7,30 @@ import {
   Text,
   IconButton,
   VStack,
-  useDisclosure,
   useToast,
   Tooltip,
   UnorderedList,
   ListItem,
   Icon,
   Link,
+  Checkbox,
 } from "@chakra-ui/react";
 import { FormProvider, useForm } from "react-hook-form";
+import { FirebaseError } from "@firebase/util";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useHistory } from "react-router-dom";
 import * as yup from "yup";
 import { Link as RouterLink } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { omit } from "lodash";
 import TextField from "components/common/inputs/TextField";
-import bigLogoUrl from "assets/img/common/logo-big.png";
+import SelectField from "components/common/inputs/SelectField";
 import { ReactComponent as InfoIcon } from "assets/img/icons/info.svg";
 import { emailRegex } from "config/constants";
-//   import ConfirmEmailModal from './modals/confirm-email-modal';
-//   import useCompanyToken from './hooks/company-token';
-//   import { useSocialLogin } from './hooks/use-social-login';
 import { ReactComponent as GoogleLogo } from "assets/img/icons/google-icon.svg";
 import { ReactComponent as FacebookLogo } from "assets/img/icons/facebook-icon.svg";
 import signupImageUrl from "assets/img/sign-up.png";
-
-import { useDispatch } from "react-redux";
-import { setUser } from "service/auth/authSlice";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
-// import { database } from "firebase";
+import { useState } from "react";
 
 const schema = () =>
   yup.object().shape({
@@ -54,6 +47,7 @@ const schema = () =>
       .required("Email is required")
       .matches(emailRegex, "Not a valid email")
       .max(50, "signup:Email is too long"),
+    role: yup.string().required("Position is Required"),
     password: yup
       .string()
       .required("Password is required")
@@ -84,54 +78,60 @@ interface SignUpForm {
   firstName: string;
   lastName: string;
   email: string;
+  role: string;
   password: string;
   confirmPassword: string;
-}
-
-interface UserAuth {
-  email: string;
-  accessToken: string;
-  uid: string;
 }
 
 const SignUp = () => {
   const history = useHistory();
   const toast = useToast();
+  const [isTermsPolicyAgreed, setIsTermsPolicyAgreed] =
+    useState<boolean>(false);
+  const [isUserCreating, setIsUserCreating] = useState<boolean>(false);
 
   const form = useForm<SignUpForm>({
     resolver: yupResolver<yup.AnyObjectSchema>(schema()),
     mode: "onChange",
   });
 
-  const onSubmit = (values: SignUpForm) => {
+  const onSubmit = async (values: SignUpForm) => {
+    setIsUserCreating(true);
+
     const db = getDatabase();
     const auth = getAuth();
 
-    createUserWithEmailAndPassword(auth, values.email, values.password)
-      .then(() => {
-        const user = auth.currentUser;
+    try {
+      await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const user = auth.currentUser;
 
-        if(!user) return;
-        set(ref(db, 'users/' + user.uid), {
+      if (user) {
+        await set(ref(db, "users/" + user.uid), {
           id: user.uid,
           firstName: values.firstName,
           lastName: values.lastName,
           email: values.email,
+          role: values.role,
           lastLogin: Date.now(),
         });
+      }
 
-        toast({
-          status: "success",
-          description: "User registered successfully",
-        });
-        history.push("/login");
-      })
-      .catch((error) => {
+      toast({
+        status: "success",
+        description: "User registered successfully",
+      });
+      
+      history.push("/login");
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
         toast({
           status: "error",
           description: error.message,
         });
-      });
+      }
+    }
+
+    setIsUserCreating(false);
   };
 
   return (
@@ -149,7 +149,7 @@ const SignUp = () => {
               Sign Up
             </Heading>
 
-            <Text color="grey.300" mb="47px">
+            <Text color="grey.300" mb="30px">
               Sign up and enjoy.
             </Text>
 
@@ -178,6 +178,21 @@ const SignUp = () => {
                   placeholder="Enter your email"
                   trim
                 />
+
+                <SelectField
+                  name="role"
+                  label="Position in Journalism"
+                  placeholder="Chose your position"
+                >
+                  <option value="nUser">
+                    Novice Journalist | Looking for a job or want to improve my
+                    skills and get feedback from professionals
+                  </option>
+                  <option value="pUser">
+                    Professional Journalist | Looking for employee or
+                    interesting people
+                  </option>
+                </SelectField>
 
                 <TextField
                   name="password"
@@ -216,6 +231,41 @@ const SignUp = () => {
                   type="password"
                   placeholder="Confirm your password"
                 />
+                <Flex fontSize="md" alignItems="center">
+                  <Checkbox
+                    mr="2"
+                    isChecked={isTermsPolicyAgreed}
+                    onChange={(e) => setIsTermsPolicyAgreed(e.target.checked)}
+                  />
+                  I agree to Product
+                  <Link
+                    ml="1"
+                    as={RouterLink}
+                    to="/terms-policy"
+                    textAlign="right"
+                    fontSize="md"
+                    color="blue.500"
+                    fontWeight="500"
+                  >
+                    Terms and Policy
+                  </Link>
+                </Flex>
+                <Button
+                  w="100%"
+                  mb="30px"
+                  type="submit"
+                  disabled={
+                    !form.formState.isValid ||
+                    !isTermsPolicyAgreed ||
+                    isUserCreating
+                  }
+                  isLoading={isUserCreating}
+                  colorScheme="primary"
+                  alignSelf="center"
+                >
+                  Get started now
+                </Button>
+
                 <Link
                   as={RouterLink}
                   to="/login"
@@ -227,20 +277,6 @@ const SignUp = () => {
                 >
                   Already have an account? Log In
                 </Link>
-                <Button
-                  w="100%"
-                  mb="30px"
-                  type="submit"
-                  disabled={!form.formState.isValid}
-                  //   disabled={
-                  //     !form.formState.isValid || signupLoading || companyLoading
-                  //   }
-                  //   isLoading={signupLoading || companyLoading}
-                  colorScheme="primary"
-                  alignSelf="center"
-                >
-                  Submit
-                </Button>
 
                 <Flex
                   w="100%"
@@ -260,7 +296,7 @@ const SignUp = () => {
                   <Box w="25%" h="1px" bgColor="grey.200" />
                 </Flex>
 
-                <Flex pt="28px" w="100%" justifyContent="center">
+                <Flex pt="10px" w="100%" justifyContent="center">
                   <IconButton
                     w="70px"
                     colorScheme="white"

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Box,
   Flex,
@@ -11,21 +11,20 @@ import {
   VStack,
   Link,
   useToast,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Link as RouterLink, useRouteMatch } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import { FirebaseError } from "@firebase/util";
 import { yupResolver } from "@hookform/resolvers/yup";
 import TextField from "components/common/inputs/TextField";
 import loginImageUrl from "assets/img/login.png";
-import { emailRegex, PASSWORD_PATTERN } from "config/constants";
+import { emailRegex } from "config/constants";
 import * as yup from "yup";
 import { ReactComponent as GoogleLogo } from "assets/img/icons/google-icon.svg";
 import { ReactComponent as FacebookLogo } from "assets/img/icons/facebook-icon.svg";
-
 import { useDispatch } from "react-redux";
-import { setUser } from "service/auth/authSlice";
+import { setAuth } from "service/auth/authSlice";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { getDatabase, ref, update } from "firebase/database";
 
@@ -39,135 +38,60 @@ const schema = () =>
       .string()
       .matches(emailRegex, "Not a valid email")
       .max(50, "login:Email is too long"),
-    password: yup
-      .string()
-      .matches(PASSWORD_PATTERN, "Not a valid password")
-      .min(8, "Password must be at least 8 characters")
-      .max(20, "Password is too long"),
+    password: yup.string().required("Required for login"),
   });
 
 const Login = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const toast = useToast();
+  const [isUserLoading, setIsUserLoading] = useState<boolean>(false);
 
-  const onSubmit = ({ email, password }: LoginForm) => {
+  const onSubmit = async ({ email, password }: LoginForm) => {
+    setIsUserLoading(true);
+
     const db = getDatabase();
     const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-      .then(({ user }) => {
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password).then(({ user }) => {
         dispatch(
-          setUser({
-            email: user.email,
+          setAuth({
             token: user.accessToken,
             refreshToken: user.refreshToken,
             id: user.uid,
           })
         );
-        update(ref(db, 'users/' + user.uid), {
+
+        update(ref(db, "users/" + user.uid), {
           lastLogin: Date.now(),
         });
         toast({
           status: "success",
           description: "User logged successfully",
         });
-        history.push('/');
-      })
-      .catch((error) => {
+        history.push("/");
+      });
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
         toast({
           status: "error",
           description: error.message,
         });
-      });
+        form.setValue("password", "");
+      }
+    }
+
+    setIsUserLoading(false);
   };
 
   const form = useForm<LoginForm>({
     resolver: yupResolver<yup.AnyObjectSchema>(schema()),
     mode: "onChange",
   });
-  // const { callbackUrl, getCognitoLink, getQueryParams } = useSocialLogin();
-  // const googleLink = getCognitoLink('Google');
-  // const appleLink = getCognitoLink('SignInWithApple');
-
-  const dispatch = useDispatch();
-  // const [login, { isLoading: loginLoading }] = useLoginMutation();
-  // const [loginSocial, { isLoading: loginSocialLoading }] =
-  //   useLoginSocialMutation();
-  // const [loginCompany, { isLoading: companyLoading }] = useCompanyToken();
-
-  // const companyStatus = useRouteMatch<{ status: string }>('/login/:status');
-
-  const toast = useToast();
-  const confirmModal = useDisclosure();
-  const changePasswordModal = useDisclosure();
-  const forgotPasswordModal = useDisclosure();
-  const additionalInfoModal = useDisclosure();
-  // const togglePageLoading = usePageLoading();
-
-  const [errorUser, setErrorUser] = useState(null);
-
-  const onLoginError = useCallback(
-    (error): void => {
-      const err = error.data?.error;
-      if (err?.name === "UserNotConfirmedException") {
-        confirmModal.onOpen();
-        return;
-      } else if (err?.newPasswordRequired) {
-        changePasswordModal.onOpen();
-        return;
-      } else if (err?.required?.length) {
-        setErrorUser(err?.user);
-
-        additionalInfoModal.onOpen();
-        return;
-      }
-      toast({
-        status: "error",
-        title: "Error",
-        description: err
-          ? err.message?.message || err.message
-          : "Oh no, there was an error!",
-        isClosable: true,
-      });
-    },
-    [toast]
-  );
-
-  // const onLoginSocial = useCallback(
-  //   async (cognitoCode) => {
-  //     togglePageLoading(true);
-  //     try {
-  //       const loginSocialRequest = {
-  //         code: cognitoCode,
-  //         redirectUri: callbackUrl,
-  //       };
-  //       const res = await loginSocial(loginSocialRequest).unwrap();
-  //       dispatch(setCredentials(res));
-  //       loginCompany();
-  //     } catch (error) {
-  //       onLoginError(error);
-  //       togglePageLoading(false);
-  //     }
-  //   },
-  //   [callbackUrl, loginSocial, dispatch, onLoginError]
-  // );
-
-  // useEffect(() => {
-  //   getQueryParams(onLoginSocial);
-  // }, [getQueryParams, onLoginSocial]);
-
-  // const onSubmit = useCallback(
-  //   async (values: LoginForm) => {
-  //     try {
-  //       const res = await login(values).unwrap();
-  //       dispatch(setCredentials(res));
-  //       loginCompany();
-  //     } catch (error: any) {
-  //       onLoginError(error);
-  //     }
-  //   },
-  //   [confirmModal, dispatch, login, onLoginError]
-  // );
 
   const firstMount = useRef<boolean>(true);
+
   useEffect(() => {
     // hack to validate autofill values
     if (!firstMount.current) {
@@ -217,7 +141,8 @@ const Login = () => {
                 />
                 <HStack justify="space-between" alignSelf="stretch">
                   <Link
-                    onClick={forgotPasswordModal.onOpen}
+                    as={RouterLink}
+                    to="/password-recovery"
                     fontSize="md"
                     color="grey.300"
                     textDecoration="underline"
@@ -239,19 +164,10 @@ const Login = () => {
                   w="100%"
                   mb="30px"
                   type="submit"
-                  disabled={
-                    !form.formState.isValid
-                    // !form.formState.isValid ||
-                    // loginLoading ||
-                    // loginSocialLoading ||
-                    // companyLoading
-                  }
+                  disabled={!form.formState.isValid || isUserLoading}
                   colorScheme="primary"
                   px={20}
-                  isLoading={
-                    false
-                    // loginLoading || loginSocialLoading || companyLoading
-                  }
+                  isLoading={isUserLoading}
                 >
                   Sign In
                 </Button>

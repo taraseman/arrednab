@@ -5,7 +5,6 @@ type Props = React.ComponentProps<typeof Route>;
 
 function ProtectedRoute({ children, ...rest }: Props) {
   const token = useAppSelector((state) => state.auth.token);
-
   return (
     <Route {...rest}>{!!token ? children : <Redirect to="/login" />}</Route>
   );
