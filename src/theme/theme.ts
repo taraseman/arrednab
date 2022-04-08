@@ -4,20 +4,19 @@ const theme = extendTheme({
   colors: {
     primary: {
       500: "#4C6FFF",
+      700: "#1943EF",
     },
     secondary: {
       500: "#1DC7B8",
     },
     grey: {
-      50: "#E5E5E5",
       100: "#F5F6FA",
-      150: "#E3E7F2",
-      170: "#c7c7c7",
-      200: "#DFE1E5",
-      250: "#A7B0C7",
+      150: "#EAEDF3",
+      200: "#DFE1E5",  
       300: "#8890A0",
       400: "#576073",
-      500: "#3D454E",
+      450: "#6F7C8B",
+      500: "#1A1E2C",   
       600: "#172635",
     },
     red: {
@@ -31,6 +30,8 @@ const theme = extendTheme({
     blue: {
       300: "#9EE6FE",
       400: "#5A7DDD",
+      500: "#4C6FFF",
+      600: "#040D32",
     },
     white: "#FFFFFF",
   },
@@ -42,7 +43,8 @@ const theme = extendTheme({
     md: "0.875rem", // 14px
     lg: "1rem", // 16px
     xl: "1.25rem", // 20px
-    "2xl": "1.625rem", // 26px
+    "2xl": "1.75rem", // 28px
+    "3xl": "1.875rem" //30px
   },
   styles: {
     global: {

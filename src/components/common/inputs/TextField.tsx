@@ -11,7 +11,7 @@ import {
   import { useContext } from 'react';
   import { get, useFormContext } from 'react-hook-form';
   import trimInputValue from 'utils/trimInputValue';
-  import { EditFormContext } from './editable-form';
+  import { EditFormContext } from './form-context';
   
   interface Props extends InputProps {
     name: string;

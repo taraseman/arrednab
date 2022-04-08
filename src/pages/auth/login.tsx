@@ -1,74 +1,105 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Box,
-  Container,
   Flex,
   Button,
   HStack,
   Image,
   Heading,
   Text,
-  Divider,
-  IconButton,
   VStack,
   Link,
   useToast,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Link as RouterLink, useRouteMatch } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { FirebaseError } from "@firebase/util";
 import { yupResolver } from "@hookform/resolvers/yup";
 import TextField from "components/common/inputs/TextField";
 import loginImageUrl from "assets/img/login.png";
-import { emailRegex, PASSWORD_PATTERN } from "config/constants";
+import { EMAIL_REGEX } from "config/constants";
 import * as yup from "yup";
-import { ReactComponent as GoogleLogo } from "assets/img/icons/google-icon.svg";
-import { ReactComponent as FacebookLogo } from "assets/img/icons/facebook-icon.svg";
+import { useDispatch } from "react-redux";
+import { setAuth } from "service/auth/authSlice";
+import { setUser } from "service/userSlice";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref, onValue } from "firebase/database";
+import ChoseRoleModal from "./modals/ChoseRoleModal";
+import { User } from "types/user-types";
+import SocialLogin from "./SocialLogin";
 
 interface LoginForm {
   email: string;
-  phoneNumber: string;
-  emailOrPhone: string;
   password: string;
 }
 const schema = () =>
   yup.object().shape({
     email: yup
       .string()
-      .matches(emailRegex, "Not a valid email")
+      .matches(EMAIL_REGEX, "Not a valid email")
       .max(50, "login:Email is too long"),
-    password: yup
-      .string()
-      .matches(PASSWORD_PATTERN, "Not a valid password")
-      .min(8, "Password must be at least 8 characters")
-      .max(20, "Password is too long"),
+    password: yup.string().required("Required for login"),
   });
 
 const Login = () => {
+  const [userWithoutRole, setUserWithoutRole] = useState<User | null>(
+    null
+  );
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const toast = useToast();
+  const [isUserLoading, setIsUserLoading] = useState<boolean>(false);
+
+  const onSubmit = async ({ email, password }: LoginForm) => {
+    setIsUserLoading(true);
+
+    const db = getDatabase();
+    const auth = getAuth();
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password).then(
+        ({ user }) => {
+          dispatch(
+            setAuth({
+              token: user.accessToken,
+              refreshToken: user.refreshToken,
+              id: user.uid,
+            })
+          );
+
+          const currentUserRef = ref(db, "users/" + user.uid);
+          onValue(currentUserRef, (snapshot) => {
+            dispatch(setUser(snapshot.val()));
+          });
+
+          toast({
+            status: "success",
+            description: "User logged successfully",
+          });
+          history.push("/");
+        }
+      );
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        toast({
+          status: "error",
+          description: error.message,
+        });
+        form.setValue("password", "");
+      }
+    }
+
+    setIsUserLoading(false);
+  };
+
   const form = useForm<LoginForm>({
     resolver: yupResolver<yup.AnyObjectSchema>(schema()),
     mode: "onChange",
   });
-  // const { callbackUrl, getCognitoLink, getQueryParams } = useSocialLogin();
-  // const googleLink = getCognitoLink('Google');
-  // const appleLink = getCognitoLink('SignInWithApple');
-
-  // const dispatch = useDispatch();
-  // const [login, { isLoading: loginLoading }] = useLoginMutation();
-  // const [loginSocial, { isLoading: loginSocialLoading }] =
-  //   useLoginSocialMutation();
-  // const [loginCompany, { isLoading: companyLoading }] = useCompanyToken();
-
-  // const companyStatus = useRouteMatch<{ status: string }>('/login/:status');
-
-  const toast = useToast();
-  const confirmModal = useDisclosure();
-  const changePasswordModal = useDisclosure();
-  const forgotPasswordModal = useDisclosure();
-  const additionalInfoModal = useDisclosure();
-  // const togglePageLoading = usePageLoading();
 
   const firstMount = useRef<boolean>(true);
+
   useEffect(() => {
     // hack to validate autofill values
     if (!firstMount.current) {
@@ -79,73 +110,12 @@ const Login = () => {
     setTimeout(() => form.reset({}, { keepValues: true }), 0);
   }, [form]);
 
-  const [errorUser, setErrorUser] = useState(null);
-
-  const onLoginError = useCallback(
-    (error): void => {
-      const err = error.data?.error;
-      if (err?.name === "UserNotConfirmedException") {
-        confirmModal.onOpen();
-        return;
-      } else if (err?.newPasswordRequired) {
-        changePasswordModal.onOpen();
-        return;
-      } else if (err?.required?.length) {
-        setErrorUser(err?.user);
-
-        additionalInfoModal.onOpen();
-        return;
-      }
-      toast({
-        status: "error",
-        title: "Error",
-        description: err
-          ? err.message?.message || err.message
-          : "Oh no, there was an error!",
-        isClosable: true,
-      });
-    },
-    [toast]
-  );
-
-  // const onLoginSocial = useCallback(
-  //   async (cognitoCode) => {
-  //     togglePageLoading(true);
-  //     try {
-  //       const loginSocialRequest = {
-  //         code: cognitoCode,
-  //         redirectUri: callbackUrl,
-  //       };
-  //       const res = await loginSocial(loginSocialRequest).unwrap();
-  //       dispatch(setCredentials(res));
-  //       loginCompany();
-  //     } catch (error) {
-  //       onLoginError(error);
-  //       togglePageLoading(false);
-  //     }
-  //   },
-  //   [callbackUrl, loginSocial, dispatch, onLoginError]
-  // );
-
-  // useEffect(() => {
-  //   getQueryParams(onLoginSocial);
-  // }, [getQueryParams, onLoginSocial]);
-
-  // const onSubmit = useCallback(
-  //   async (values: LoginForm) => {
-  //     try {
-  //       const res = await login(values).unwrap();
-  //       dispatch(setCredentials(res));
-  //       loginCompany();
-  //     } catch (error: any) {
-  //       onLoginError(error);
-  //     }
-  //   },
-  //   [confirmModal, dispatch, login, onLoginError]
-  // );
-
   return (
     <Box h="100vh" w="100%" bg="white">
+      <ChoseRoleModal
+        user={userWithoutRole}
+        onClose={() => setUserWithoutRole(null)}
+      />
       <Flex align="center" justify="center" h="100vh">
         <Image
           display={["none", "none", "none", "block", "block"]}
@@ -168,7 +138,7 @@ const Login = () => {
                 as="form"
                 spacing={4}
                 align="flex-start"
-                // onSubmit={form.handleSubmit(onSubmit)}
+                onSubmit={form.handleSubmit(onSubmit)}
               >
                 <TextField
                   name="email"
@@ -183,7 +153,8 @@ const Login = () => {
                 />
                 <HStack justify="space-between" alignSelf="stretch">
                   <Link
-                    onClick={forgotPasswordModal.onOpen}
+                    as={RouterLink}
+                    to="/password-recovery"
                     fontSize="md"
                     color="grey.300"
                     textDecoration="underline"
@@ -205,69 +176,14 @@ const Login = () => {
                   w="100%"
                   mb="30px"
                   type="submit"
-                  disabled={
-                    !form.formState.isValid
-                    // !form.formState.isValid ||
-                    // loginLoading ||
-                    // loginSocialLoading ||
-                    // companyLoading
-                  }
+                  disabled={!form.formState.isValid || isUserLoading}
                   colorScheme="primary"
                   px={20}
-                  isLoading={
-                    false
-                    // loginLoading || loginSocialLoading || companyLoading
-                  }
+                  isLoading={isUserLoading}
                 >
                   Sign In
                 </Button>
-
-                <Flex
-                  w="100%"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Box w="25%" h="1px" bgColor="grey.200" />
-                  <Text
-                    color="grey.400"
-                    textAlign="center"
-                    w="189px"
-                    px="17px"
-                    fontSize="xs"
-                  >
-                    Or do it via other accounts
-                  </Text>
-                  <Box w="25%" h="1px" bgColor="grey.200" />
-                </Flex>
-
-                <Flex pt="28px" w="100%" justifyContent="center">
-                  <IconButton
-                    w="70px"
-                    colorScheme="white"
-                    boxShadow="0px 1px 4px rgba(0, 0, 0, 0.1)"
-                    icon={<GoogleLogo />}
-                    aria-label="google login"
-                    mr="20px"
-                    _hover={{ bg: "grey.100" }}
-                    fontWeight="normal"
-                    as="a"
-                    //   href={googleLink}
-                    target="_self"
-                  />
-
-                  <IconButton
-                    w="70px"
-                    boxShadow="0px 1px 4px rgba(0, 0, 0, 0.1)"
-                    colorScheme="white"
-                    _hover={{ bg: "grey.100" }}
-                    aria-label="facebook login"
-                    icon={<FacebookLogo />}
-                    fontWeight="normal"
-                    as="a"
-                    // href={appleLink}
-                    target="_self"
-                  />
-                </Flex>
+                <SocialLogin />
               </VStack>
             </FormProvider>
           </Box>
