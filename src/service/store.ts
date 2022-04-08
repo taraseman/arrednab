@@ -1,15 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import api from "service/api/api";
 import authReducer from './auth/authSlice';
+import userReducer from './userSlice';
+import articlesReducer from './articlesSlice';
 import localStorageMiddleware from './middlewares/local-storage';
-
-// import bidReducer from './project/bid-slice';
 
 const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
     auth: authReducer,
-    // bid: bidReducer,
+    user: userReducer,
+    articles: articlesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }).concat([

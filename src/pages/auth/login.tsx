@@ -7,7 +7,6 @@ import {
   Image,
   Heading,
   Text,
-  IconButton,
   VStack,
   Link,
   useToast,
@@ -19,14 +18,16 @@ import { FirebaseError } from "@firebase/util";
 import { yupResolver } from "@hookform/resolvers/yup";
 import TextField from "components/common/inputs/TextField";
 import loginImageUrl from "assets/img/login.png";
-import { emailRegex } from "config/constants";
+import { EMAIL_REGEX } from "config/constants";
 import * as yup from "yup";
-import { ReactComponent as GoogleLogo } from "assets/img/icons/google-icon.svg";
-import { ReactComponent as FacebookLogo } from "assets/img/icons/facebook-icon.svg";
 import { useDispatch } from "react-redux";
 import { setAuth } from "service/auth/authSlice";
+import { setUser } from "service/userSlice";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { getDatabase, ref, update } from "firebase/database";
+import { getDatabase, ref, onValue } from "firebase/database";
+import ChoseRoleModal from "./modals/ChoseRoleModal";
+import { User } from "types/user-types";
+import SocialLogin from "./SocialLogin";
 
 interface LoginForm {
   email: string;
@@ -36,12 +37,15 @@ const schema = () =>
   yup.object().shape({
     email: yup
       .string()
-      .matches(emailRegex, "Not a valid email")
+      .matches(EMAIL_REGEX, "Not a valid email")
       .max(50, "login:Email is too long"),
     password: yup.string().required("Required for login"),
   });
 
 const Login = () => {
+  const [userWithoutRole, setUserWithoutRole] = useState<User | null>(
+    null
+  );
   const history = useHistory();
   const dispatch = useDispatch();
   const toast = useToast();
@@ -54,24 +58,28 @@ const Login = () => {
     const auth = getAuth();
 
     try {
-      await signInWithEmailAndPassword(auth, email, password).then(({ user }) => {
-        dispatch(
-          setAuth({
-            token: user.accessToken,
-            refreshToken: user.refreshToken,
-            id: user.uid,
-          })
-        );
+      await signInWithEmailAndPassword(auth, email, password).then(
+        ({ user }) => {
+          dispatch(
+            setAuth({
+              token: user.accessToken,
+              refreshToken: user.refreshToken,
+              id: user.uid,
+            })
+          );
 
-        update(ref(db, "users/" + user.uid), {
-          lastLogin: Date.now(),
-        });
-        toast({
-          status: "success",
-          description: "User logged successfully",
-        });
-        history.push("/");
-      });
+          const currentUserRef = ref(db, "users/" + user.uid);
+          onValue(currentUserRef, (snapshot) => {
+            dispatch(setUser(snapshot.val()));
+          });
+
+          toast({
+            status: "success",
+            description: "User logged successfully",
+          });
+          history.push("/");
+        }
+      );
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
         toast({
@@ -104,6 +112,10 @@ const Login = () => {
 
   return (
     <Box h="100vh" w="100%" bg="white">
+      <ChoseRoleModal
+        user={userWithoutRole}
+        onClose={() => setUserWithoutRole(null)}
+      />
       <Flex align="center" justify="center" h="100vh">
         <Image
           display={["none", "none", "none", "block", "block"]}
@@ -171,53 +183,7 @@ const Login = () => {
                 >
                   Sign In
                 </Button>
-
-                <Flex
-                  w="100%"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Box w="25%" h="1px" bgColor="grey.200" />
-                  <Text
-                    color="grey.400"
-                    textAlign="center"
-                    w="189px"
-                    px="17px"
-                    fontSize="xs"
-                  >
-                    Or do it via other accounts
-                  </Text>
-                  <Box w="25%" h="1px" bgColor="grey.200" />
-                </Flex>
-
-                <Flex pt="28px" w="100%" justifyContent="center">
-                  <IconButton
-                    w="70px"
-                    colorScheme="white"
-                    boxShadow="0px 1px 4px rgba(0, 0, 0, 0.1)"
-                    icon={<GoogleLogo />}
-                    aria-label="google login"
-                    mr="20px"
-                    _hover={{ bg: "grey.100" }}
-                    fontWeight="normal"
-                    as="a"
-                    //   href={googleLink}
-                    target="_self"
-                  />
-
-                  <IconButton
-                    w="70px"
-                    boxShadow="0px 1px 4px rgba(0, 0, 0, 0.1)"
-                    colorScheme="white"
-                    _hover={{ bg: "grey.100" }}
-                    aria-label="facebook login"
-                    icon={<FacebookLogo />}
-                    fontWeight="normal"
-                    as="a"
-                    // href={appleLink}
-                    target="_self"
-                  />
-                </Flex>
+                <SocialLogin />
               </VStack>
             </FormProvider>
           </Box>

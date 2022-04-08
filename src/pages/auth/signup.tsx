@@ -5,7 +5,6 @@ import {
   Heading,
   Flex,
   Text,
-  IconButton,
   VStack,
   useToast,
   Tooltip,
@@ -24,13 +23,13 @@ import { Link as RouterLink } from "react-router-dom";
 import TextField from "components/common/inputs/TextField";
 import SelectField from "components/common/inputs/SelectField";
 import { ReactComponent as InfoIcon } from "assets/img/icons/info.svg";
-import { emailRegex } from "config/constants";
-import { ReactComponent as GoogleLogo } from "assets/img/icons/google-icon.svg";
-import { ReactComponent as FacebookLogo } from "assets/img/icons/facebook-icon.svg";
+import { EMAIL_REGEX } from "config/constants";
 import signupImageUrl from "assets/img/sign-up.png";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
 import { useState } from "react";
+import SocialLogin from "./SocialLogin";
+import setDataBaseData from "service/firebase-service/set-database-data";
+import { User, UserRole } from "types/user-types";
 
 const schema = () =>
   yup.object().shape({
@@ -45,7 +44,7 @@ const schema = () =>
     email: yup
       .string()
       .required("Email is required")
-      .matches(emailRegex, "Not a valid email")
+      .matches(EMAIL_REGEX, "Not a valid email")
       .max(50, "signup:Email is too long"),
     role: yup.string().required("Position is Required"),
     password: yup
@@ -78,7 +77,7 @@ interface SignUpForm {
   firstName: string;
   lastName: string;
   email: string;
-  role: string;
+  role: UserRole;
   password: string;
   confirmPassword: string;
 }
@@ -97,8 +96,6 @@ const SignUp = () => {
 
   const onSubmit = async (values: SignUpForm) => {
     setIsUserCreating(true);
-
-    const db = getDatabase();
     const auth = getAuth();
 
     try {
@@ -106,21 +103,23 @@ const SignUp = () => {
       const user = auth.currentUser;
 
       if (user) {
-        await set(ref(db, "users/" + user.uid), {
-          id: user.uid,
-          firstName: values.firstName,
-          lastName: values.lastName,
-          email: values.email,
-          role: values.role,
-          lastLogin: Date.now(),
-        });
+        await setDataBaseData<User>(
+          {
+            id: user.uid,
+            firstName: values.firstName,
+            lastName: values.lastName,
+            email: values.email,
+            role: values.role,
+          },
+          "users/" + user.uid
+        );
       }
 
       toast({
         status: "success",
         description: "User registered successfully",
       });
-      
+
       history.push("/login");
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
@@ -277,53 +276,7 @@ const SignUp = () => {
                 >
                   Already have an account? Log In
                 </Link>
-
-                <Flex
-                  w="100%"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Box w="25%" h="1px" bgColor="grey.200" />
-                  <Text
-                    color="grey.400"
-                    textAlign="center"
-                    w="189px"
-                    px="17px"
-                    fontSize="xs"
-                  >
-                    Or do it via other accounts
-                  </Text>
-                  <Box w="25%" h="1px" bgColor="grey.200" />
-                </Flex>
-
-                <Flex pt="10px" w="100%" justifyContent="center">
-                  <IconButton
-                    w="70px"
-                    colorScheme="white"
-                    boxShadow="0px 1px 4px rgba(0, 0, 0, 0.1)"
-                    icon={<GoogleLogo />}
-                    aria-label="google login"
-                    mr="20px"
-                    _hover={{ bg: "grey.100" }}
-                    fontWeight="normal"
-                    as="a"
-                    //   href={googleLink}
-                    target="_self"
-                  />
-
-                  <IconButton
-                    w="70px"
-                    boxShadow="0px 1px 4px rgba(0, 0, 0, 0.1)"
-                    colorScheme="white"
-                    _hover={{ bg: "grey.100" }}
-                    aria-label="facebook login"
-                    icon={<FacebookLogo />}
-                    fontWeight="normal"
-                    as="a"
-                    // href={appleLink}
-                    target="_self"
-                  />
-                </Flex>
+                <SocialLogin />
               </VStack>
             </FormProvider>
           </Box>
