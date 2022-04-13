@@ -16,7 +16,7 @@ function PageRoutes() {
 
   return (
     <Switch location={location}>
-      <ProtectedRoute path="/" exact>
+      <ProtectedRoute path={['/', '/dashboard']} exact>
         <Dashboard />
       </ProtectedRoute>
       

@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import api from "service/api/api";
 import authReducer from './auth/authSlice';
 import userReducer from './userSlice';
+import usersReducer from './allUsersSlice';
 import articlesReducer from './articlesSlice';
 import localStorageMiddleware from './middlewares/local-storage';
 
@@ -10,6 +11,7 @@ const store = configureStore({
     [api.reducerPath]: api.reducer,
     auth: authReducer,
     user: userReducer,
+    users: usersReducer,
     articles: articlesReducer,
   },
   middleware: (getDefaultMiddleware) =>

@@ -27,6 +27,7 @@ import {
 const Header = () => {
   const dispatch = useAppDispatch();
   const editUserModalDisclosure = useDisclosure();
+  
   const isAdmin = useRoleCheck(["admin"]);
 
   const user = useAppSelector((state) => state.user.user);

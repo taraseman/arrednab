@@ -5,8 +5,8 @@ const updateDataBaseData = (data: object, path: string) => {
     const db = getDatabase();
 
     try {
-      const user = await update(ref(db, path), data);
-      resolve(user);
+      const response = await update(ref(db, path), data);
+      resolve(response);
     } catch (error) {
       reject(error);
     }
