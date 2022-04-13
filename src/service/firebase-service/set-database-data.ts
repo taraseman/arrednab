@@ -5,8 +5,8 @@ const setDataBaseData = <DataType>(data: DataType, path: string) => {
     const db = getDatabase();
 
     try {
-      const user = await set(ref(db, path), data);
-      resolve(user);
+      const response = await set(ref(db, path), data);
+      resolve(response);
     } catch (error) {
       reject(error);
     }

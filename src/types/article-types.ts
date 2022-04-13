@@ -1,9 +1,9 @@
 export interface Comment {
     id: string;
     articleId: string;
+    authorId: string;
     comment: string;
     authorCommentUrl: string;
-    authorCommentId: string;
     authorCommentDisplayName: string;
 }
 
@@ -12,9 +12,6 @@ export type categories = 'science' | 'studying' | 'films' | 'literature' | 'othe
 export interface Article {
     id: string;
     authorId: string;
-    displayName: string;
-    authorAvatarUrl?: string;
-    authorEmail: string;
     title: string;
     description: string;
     imageUrl: string;

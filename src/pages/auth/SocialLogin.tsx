@@ -45,19 +45,15 @@ const SocialLogin = () => {
       const result = await signInWithPopup(auth, provider);
       const userRef = ref(db, "users/" + result.user.uid);
       const userCheck = await get(userRef);
-
       const { user } = result;
-
 
       dispatch(
         setAuth({
-          token: user.accessToken,
+          token: (user as any).accessToken ,
           refreshToken: user.refreshToken,
           id: user.uid,
         })
       );
-
-      console.log(user)
 
       if (!userCheck.exists() && user.email && user.displayName) {
         setUserWithoutRole({

@@ -89,25 +89,10 @@ function AddArticleModal({ isOpen, onClose }: Props) {
         const articleListRef = await ref(db, "articles");
         const newPostRef = await push(articleListRef);
 
-        console.log({
-          id: newPostRef.ref.key,
-          authorId: user.id,
-          authorAvatarUrl: user?.photoUrl || null,
-          displayName: user.firstName + ' ' + user.lastName,
-          title: data.title,
-          description: data.description,
-          comments: [],
-          imageUrl: url as string,
-          category: data.category,
-          created: Date.now(),
-        })
 
         await set(newPostRef, {
           id: newPostRef.ref.key,
           authorId: user.id,
-          displayName: user.firstName + ' ' + user.lastName,
-          authorAvatarUrl: user?.photoUrl || null,
-          authorEmail: user.email,
           title: data.title,
           description: data.description,
           comments: [],
@@ -122,7 +107,6 @@ function AddArticleModal({ isOpen, onClose }: Props) {
         });
       }
     } catch (error: unknown) {
-      console.log(error)
       if (error instanceof FirebaseError)
         toast({
           status: "error",

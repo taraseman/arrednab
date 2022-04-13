@@ -62,7 +62,7 @@ const Login = () => {
         ({ user }) => {
           dispatch(
             setAuth({
-              token: user.accessToken,
+              token: (user as any).accessToken,
               refreshToken: user.refreshToken,
               id: user.uid,
             })
