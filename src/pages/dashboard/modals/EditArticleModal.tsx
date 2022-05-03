@@ -21,12 +21,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { FormProvider, useForm } from "react-hook-form";
 import TextField from "components/common/inputs/TextField";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Article } from "types/article-types";
 import { v4 as uuidv4 } from "uuid";
+import setDataBaseData from "service/firebase-service/set-database-data";
 import uploadFile from "service/firebase-service/upload-file";
 import { useAppSelector } from "hooks/redux";
 import { FirebaseError } from "@firebase/util";
-import { getDatabase, ref, push, set } from "firebase/database";
+import { getDatabase, ref, onValue, push, set } from "firebase/database";
 import SelectField from "components/common/inputs/SelectField";
 import { categoryies } from "config/constants";
 import { categories } from "types/article-types";
@@ -34,6 +36,7 @@ import { categories } from "types/article-types";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  article: Article;
 }
 
 interface ArticleForm {
@@ -54,16 +57,29 @@ const schema = yup.object().shape({
   category: yup.string().required("Category is required"),
 });
 
-function AddArticleModal({ isOpen, onClose }: Props) {
+function EditArticleModal({ isOpen, onClose, article }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const toast = useToast();
   const user = useAppSelector((state) => state.user.user);
-  const [photoUrl, setPhotoUrl] = useState<null | string>(null);
+  const [photoUrl, setPhotoUrl] = useState<null | string>(
+    article.imageUrl
+    // user?.photoUrl ? user.photoUrl : DefaultAvatarSrc
+  );
   const form = useForm<ArticleForm>({
     resolver: yupResolver<yup.AnyObjectSchema>(schema),
     mode: "onChange",
   });
+
+  useEffect(() => {
+    if (article) {
+      form.reset({
+        title: article.title,
+        description: article.description,
+        category: article.category,
+      });
+    }
+  }, [article]);
 
   const handleClose = () => {
     onClose();
@@ -89,7 +105,6 @@ function AddArticleModal({ isOpen, onClose }: Props) {
           authorId: user.id,
           title: data.title,
           description: data.description,
-          comments: [],
           imageUrl: url as string,
           category: data.category,
           created: Date.now(),
@@ -133,7 +148,7 @@ function AddArticleModal({ isOpen, onClose }: Props) {
               fontSize="xl"
               pb="32px"
             >
-              Add new article
+              Edit article
             </ModalHeader>
             <ModalBody>
               <SimpleGrid spacingY="6">
@@ -221,7 +236,7 @@ function AddArticleModal({ isOpen, onClose }: Props) {
                 ml="34px"
                 type="submit"
               >
-                Add
+                Save
               </Button>
             </ModalFooter>
           </Box>
@@ -231,4 +246,4 @@ function AddArticleModal({ isOpen, onClose }: Props) {
   );
 }
 
-export default AddArticleModal;
+export default EditArticleModal;
