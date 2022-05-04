@@ -16,7 +16,7 @@ const initialState: InitialState = {
 };
 
 const slice = createSlice({
-  name: "user",
+  name: "articles",
   initialState,
   reducers: {
     setArticles(state, action: { payload: Article[] }) {

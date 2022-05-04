@@ -38,6 +38,7 @@ const EditAvatarForm = ({ onClose, tabIndex }: Props) => {
 
   useEffect(() => {
     setPhotoUrl(user?.photoUrl ? user.photoUrl : DefaultAvatarSrc);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabIndex]);
 
   const onSubmit = async () => {

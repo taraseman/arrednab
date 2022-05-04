@@ -1,13 +1,11 @@
 export interface Comment {
     id: string;
-    articleId: string;
+    created: string;
     authorId: string;
-    comment: string;
-    authorCommentUrl: string;
-    authorCommentDisplayName: string;
+    message: string;
 }
 
-export type categories = 'science' | 'studying' | 'films' | 'literature' | 'other';
+export type Categories = 'science' | 'studying' | 'films' | 'literature' | 'other';
 
 export interface Article {
     id: string;
@@ -15,7 +13,7 @@ export interface Article {
     title: string;
     description: string;
     imageUrl: string;
-    category: categories;
+    category: Categories;
     created: number;
     comments: Comment[];
 }

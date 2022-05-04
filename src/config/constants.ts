@@ -1,4 +1,4 @@
-import { categories } from "types/article-types";
+import { Categories } from "types/article-types";
 import { PrivacyPolicyItem } from "types/global-types";
 export const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -18,7 +18,7 @@ export const PRIVACY_POLICY_ITEMS: PrivacyPolicyItem[] = [
   },
 ];
 
-export const categoryies: categories[] = [
+export const categories: Categories[] = [
   "science",
   "studying",
   "films",

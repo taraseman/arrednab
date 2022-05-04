@@ -1,9 +1,8 @@
 import { lazy } from 'react';
-import { Switch, Redirect, useLocation, useRouteMatch } from 'react-router-dom';
+import { Switch, Redirect, useLocation } from 'react-router-dom';
 import ProtectedRoute from 'components/protected-route/protected-route';
-
-// const LaborItems = lazy(() => import('pages/settings/labor-items/labor-items'));
 const Dashboard = lazy(()=> import('pages/dashboard/Dashboard'))
+const ArticlePreview = lazy(()=> import('pages/dashboard/ArticlePreview'))
 
 
 
@@ -11,13 +10,14 @@ const Dashboard = lazy(()=> import('pages/dashboard/Dashboard'))
 
 function PageRoutes() {
   const location = useLocation();
-  const topLevelPath = useRouteMatch<{ path: string }>('/:path')?.params.path;
-//   useTranslation(topLevelPath ? topLevelPath : undefined);
 
   return (
     <Switch location={location}>
-      <ProtectedRoute path={['/', '/dashboard']} exact>
+      <ProtectedRoute path={['/','/dashboard']} exact>
         <Dashboard />
+      </ProtectedRoute>
+      <ProtectedRoute path='/dashboard/:id' exact>
+        <ArticlePreview />
       </ProtectedRoute>
       
       {/* <ProtectedRoute path="/settings" exact>
