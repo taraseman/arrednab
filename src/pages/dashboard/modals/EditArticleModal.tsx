@@ -27,11 +27,14 @@ import { v4 as uuidv4 } from "uuid";
 import setDataBaseData from "service/firebase-service/set-database-data";
 import uploadFile from "service/firebase-service/upload-file";
 import { useAppSelector } from "hooks/redux";
+import { setArticles } from "service/articlesSlice";
+import { useAppDispatch } from "hooks/redux";
 import { FirebaseError } from "@firebase/util";
 import { getDatabase, ref, onValue, push, set } from "firebase/database";
 import SelectField from "components/common/inputs/SelectField";
-import { categoryies } from "config/constants";
-import { categories } from "types/article-types";
+import { categories } from "config/constants";
+import { Categories } from "types/article-types";
+import updateDataBaseData from "service/firebase-service/update-database-data";
 
 interface Props {
   isOpen: boolean;
@@ -42,7 +45,7 @@ interface Props {
 interface ArticleForm {
   title: string;
   description: string;
-  category: categories;
+  category: Categories;
 }
 
 const schema = yup.object().shape({
@@ -59,6 +62,7 @@ const schema = yup.object().shape({
 
 function EditArticleModal({ isOpen, onClose, article }: Props) {
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
   const [file, setFile] = useState<File | null>(null);
   const toast = useToast();
   const user = useAppSelector((state) => state.user.user);
@@ -78,8 +82,9 @@ function EditArticleModal({ isOpen, onClose, article }: Props) {
         description: article.description,
         category: article.category,
       });
+      setPhotoUrl(article.imageUrl);
     }
-  }, [article]);
+  }, [isOpen]);
 
   const handleClose = () => {
     onClose();
@@ -96,25 +101,40 @@ function EditArticleModal({ isOpen, onClose, article }: Props) {
         const imageName = uuidv4() + "." + file?.name?.split(".")?.pop();
         const url = await uploadFile(file, `article/${user.id}/${imageName}`);
 
-        const db = getDatabase();
-        const articleListRef = await ref(db, "articles");
-        const newPostRef = await push(articleListRef);
-
-        await set(newPostRef, {
-          id: newPostRef.ref.key,
-          authorId: user.id,
-          title: data.title,
-          description: data.description,
-          imageUrl: url as string,
-          category: data.category,
-          created: Date.now(),
-        });
-
-        toast({
-          status: "success",
-          description: "Avatar updated successfully",
-        });
+        await updateDataBaseData(
+          {
+            title: data.title,
+            description: data.description,
+            imageUrl: url as string,
+            category: data.category,
+          },
+          "articles/" + article.id
+        );
+      } else {
+        await updateDataBaseData(
+          {
+            title: data.title,
+            description: data.description,
+            category: data.category,
+          },
+          "articles/" + article.id
+        );
       }
+      const db = getDatabase();
+      const dbRef = ref(db, "articles");
+
+      await onValue(dbRef, (snapshot) => {
+        if (snapshot.val() !== null) {
+          dispatch(
+            setArticles(Object.values(snapshot.val()).reverse() as Article[])
+          );
+        }
+      });
+
+      toast({
+        status: "success",
+        description: "Avatar updated successfully",
+      });
     } catch (error: unknown) {
       if (error instanceof FirebaseError)
         toast({
@@ -169,7 +189,7 @@ function EditArticleModal({ isOpen, onClose, article }: Props) {
                   label="Category"
                   placeholder="Chose category of the article"
                 >
-                  {categoryies.map((category) => (
+                  {categories.map((category) => (
                     <option value={category} key={category}>
                       {category}
                     </option>

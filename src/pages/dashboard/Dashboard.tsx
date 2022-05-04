@@ -9,29 +9,18 @@ import {
   useDisclosure,
   Input,
   Select,
-  Skeleton,
-  Stack,
 } from "@chakra-ui/react";
 import AddArticleModal from "./modals/AddArticleModal";
 import { ReactComponent as SearchIcon } from "assets/img/icons/search-icon.svg";
 import { useAppSelector } from "hooks/redux";
-import { useEffect, useMemo, useState } from "react";
-import { getDatabase, ref, onValue } from "firebase/database";
-import { setArticles } from "service/articlesSlice";
-import { setUsers } from "service/allUsersSlice";
-import { useAppDispatch } from "hooks/redux";
-import { Article } from "types/article-types";
-import { categoryies } from "config/constants";
+import { useMemo, useState } from "react";
+import { categories } from "config/constants";
 import { debounce } from "lodash";
 import DashboardArticle from "./DashboardArticle";
 
 const Dashboard = () => {
   const addArticleModalDiclosure = useDisclosure();
   const articles = useAppSelector((state) => state.articles.articles);
-  const dispatch = useAppDispatch();
-
-  const [isArticlesLoading, setIsArticlesLoading] = useState(true);
-
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchInputValue, setSearchInputValue] = useState("");
 
@@ -54,39 +43,6 @@ const Dashboard = () => {
 
     return currentArticles;
   }, [articles, selectedCategory, searchInputValue]);
-
-  const getArticles = async () => {
-    setIsArticlesLoading(true);
-    const db = getDatabase();
-    const dbRef = ref(db, "articles");
-
-    await onValue(dbRef, (snapshot) => {
-      if (snapshot.val() !== null) {
-        dispatch(
-          setArticles(Object.values(snapshot.val()).reverse() as Article[])
-        );
-      }
-    });
-
-    setIsArticlesLoading(false);
-  };
-
-  const getUsers = async () => {
-    const db = getDatabase();
-    const dbRef = ref(db, "users");
-
-    await onValue(dbRef, (snapshot) => {
-      if (snapshot.val()) {
-        dispatch(setUsers(snapshot.val()));
-      }
-    });
-  };
-
-  useEffect(() => {
-    getArticles();
-    getUsers();
-  }, []);
-
 
   return (
     <>
@@ -133,7 +89,7 @@ const Dashboard = () => {
                   onChange={(e) => setSelectedCategory(e.target.value)}
                 >
                   <option value="">all</option>
-                  {categoryies.map((category) => (
+                  {categories.map((category) => (
                     <option value={category} key={category}>
                       {category}
                     </option>
@@ -141,19 +97,16 @@ const Dashboard = () => {
                 </Select>
               </Flex>
             </Flex>
-            {isArticlesLoading && (
-              <Stack>
-                <Skeleton mb="30px" height="300px" borderRadius="6px" />
-                <Skeleton mb="30px" height="300px" borderRadius="6px" />
-                <Skeleton mb="30px" height="300px" borderRadius="6px" />
-              </Stack>
-            )}
 
-            {filteredArticles &&
-              !isArticlesLoading &&
+            {filteredArticles  &&
               filteredArticles.map((article) => (
-                <DashboardArticle article={article} />
+                <DashboardArticle key={article.id} article={article} />
               ))}
+            {!filteredArticles?.length  && (
+              <Flex h="300px" alignItems="center" justifyContent="center">
+                <Text>There are not available articles now</Text>
+              </Flex>
+            )}
           </Box>
         </Flex>
       </Box>

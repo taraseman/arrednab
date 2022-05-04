@@ -28,8 +28,8 @@ import { useAppSelector } from "hooks/redux";
 import { FirebaseError } from "@firebase/util";
 import { getDatabase, ref, push, set } from "firebase/database";
 import SelectField from "components/common/inputs/SelectField";
-import { categoryies } from "config/constants";
-import { categories } from "types/article-types";
+import { categories } from "config/constants";
+import { Categories } from "types/article-types";
 
 interface Props {
   isOpen: boolean;
@@ -39,7 +39,7 @@ interface Props {
 interface ArticleForm {
   title: string;
   description: string;
-  category: categories;
+  category: Categories;
 }
 
 const schema = yup.object().shape({
@@ -154,7 +154,7 @@ function AddArticleModal({ isOpen, onClose }: Props) {
                   label="Category"
                   placeholder="Chose category of the article"
                 >
-                  {categoryies.map((category) => (
+                  {categories.map((category) => (
                     <option value={category} key={category}>
                       {category}
                     </option>

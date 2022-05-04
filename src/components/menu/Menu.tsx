@@ -12,7 +12,6 @@ import {
 import { NavLink } from "react-router-dom";
 import styled from "@emotion/styled";
 import { ReactComponent as DashboardIcon } from "assets/img/icons/dashboard.svg";
-import { ReactComponent as SettingsIcon } from "assets/img/icons/settings.svg";
 import { ReactComponent as LogoutIcon } from "assets/img/icons/logout.svg";
 import { resetAuth } from "service/auth/authSlice";
 import { useHistory } from "react-router";
@@ -31,11 +30,6 @@ const items: IMenuItem[] = [
   {
     path: "/",
     name: "Dashboard",
-    icon: DashboardIcon,
-  },
-  {
-    path: "/settings",
-    name: "Settings",
     icon: DashboardIcon,
   },
 ];
@@ -68,7 +62,7 @@ const MenuItemWrapper = styled(Box)`
 interface MenuLinkProps {
   to: string;
   linkText: React.ReactNode;
-  icon: any; // TODO: proper icon type;
+  icon: any; // proper icon type;
 }
 
 function MenuLink({ to, linkText, icon }: MenuLinkProps) {
@@ -93,7 +87,7 @@ function MenuLink({ to, linkText, icon }: MenuLinkProps) {
 function LeftMenu() {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const [isMenuCollupsed, setIsMenuCollupsed] = useState(true);
+  const [isMenuCollapsed, setIsMenuCollapsed] = useState(true);
   const [isSmallScreen] = useMediaQuery("(max-width: 800px)");
 
   const logout = () => {
@@ -106,7 +100,7 @@ function LeftMenu() {
     <Box
       as="aside"
       w="230px"
-      h={isSmallScreen && isMenuCollupsed ? "74px" : "100vh"}
+      h={isSmallScreen && isMenuCollapsed ? "74px" : "100vh"}
       position={isSmallScreen ? "absolute" : "sticky"}
       zIndex="100"
       top="0"
@@ -129,15 +123,15 @@ function LeftMenu() {
               bgColor="grey.100"
               transition="transform 1s"
               transform={
-                isMenuCollupsed ? "rotate(-360deg)" : "rotate(-180deg)"
+                isMenuCollapsed ? "rotate(-360deg)" : "rotate(-180deg)"
               }
               icon={<ArrowRight />}
               aria-label="f"
-              onClick={() => setIsMenuCollupsed((prevValue) => !prevValue)}
+              onClick={() => setIsMenuCollapsed((prevValue) => !prevValue)}
             />
           )}
         </Flex>
-        <Box opacity={isSmallScreen && isMenuCollupsed ? "0" : "1"}>
+        <Box opacity={isSmallScreen && isMenuCollapsed ? "0" : "1"}>
           <Text mb="20px" px="34px" color="#6F7C8B80" fontWeight="500">
             Main Menu
           </Text>

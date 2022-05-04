@@ -13,6 +13,9 @@ import DefaultAvatarSrc from "assets/img/default-profile-icon.png";
 import { Article } from "types/article-types";
 import useRoleCheck from "hooks/role-check";
 import EditArticleModal from "./modals/EditArticleModal";
+import ConfirmDeleteModal from "components/modals/ConfirmDeleteModal";
+import { getDatabase, ref, remove } from "firebase/database";
+import {useHistory} from 'react-router-dom'
 
 interface Props {
   article: Article;
@@ -23,13 +26,30 @@ const DashboardArticle = ({ article }: Props) => {
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const loginedUserId = useAppSelector((state) => state.auth.id);
   const editArticleDisclosure = useDisclosure();
+  const history = useHistory()
 
   const isWithoutSeeMoreButton = article.description.length <= 160;
 
   const isAdmin = useRoleCheck(["admin"]);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  const removeArticle = async (deleteId: string) => {
+    const db = getDatabase();
+    await remove(ref(db, `articles/${deleteId}`));
+  };
 
   return (
     <>
+      <ConfirmDeleteModal
+        title="Do you really want to delete this article?"
+        successMessage="Article deleted successfully"
+        deleteAction={async () => {
+          if (!deleteId) return;
+          removeArticle(deleteId);
+        }}
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+      />
       <EditArticleModal
         isOpen={editArticleDisclosure.isOpen}
         onClose={editArticleDisclosure.onClose}
@@ -46,6 +66,8 @@ const DashboardArticle = ({ article }: Props) => {
           borderTopRadius="6px"
           src={article.imageUrl}
           sx={{ width: "100%" }}
+          _hover={{cursor: 'pointer'}}
+          onClick={()=>history.push(`/dashboard/${article.id}`)}
         />
         <Box p="15px 25px 16px 24px">
           <Flex
@@ -95,6 +117,7 @@ const DashboardArticle = ({ article }: Props) => {
                   {users[article.authorId].firstName +
                     " " +
                     users[article.authorId].lastName}
+                    <Text color="grey.300" as="span">{users[article.authorId].role === 'pUser'? ' (professional)':''}</Text>
                 </Text>
               </Flex>
 
@@ -107,7 +130,12 @@ const DashboardArticle = ({ article }: Props) => {
                   >
                     Edit
                   </Button>
-                  <Button variant="link">Delete</Button>
+                  <Button
+                    onClick={() => setDeleteId(article.id)}
+                    variant="link"
+                  >
+                    Delete
+                  </Button>
                 </Flex>
               )}
             </Flex>
