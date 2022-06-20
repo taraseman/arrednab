@@ -33,11 +33,13 @@ const Header = () => {
 
   const getArticles = async () => {
     
+    
     const db = getDatabase();
     const dbRef = ref(db, "articles");
 
     await onValue(dbRef, (snapshot) => {
       if (snapshot.val() !== null) {
+        console.log('articles on')
         dispatch(
           setArticles(Object.values(snapshot.val()).reverse() as Article[])
         );
@@ -58,6 +60,7 @@ const Header = () => {
   };
 
   useEffect(() => {
+    console.log('use effect header')
     getArticles();
     getUsers();
   // eslint-disable-next-line react-hooks/exhaustive-deps
