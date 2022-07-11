@@ -28,13 +28,13 @@ const Dashboard = () => {
     let currentArticles = articles;
 
     if (selectedCategory) {
-      currentArticles = articles.filter(
+      currentArticles = currentArticles.filter(
         (article) => article.category === selectedCategory
       );
     }
 
     if (searchInputValue) {
-      currentArticles = articles.filter(
+      currentArticles = currentArticles.filter(
         (article) =>
           article.title.includes(searchInputValue) ||
           article.description.includes(searchInputValue)
@@ -65,7 +65,7 @@ const Dashboard = () => {
         <Flex>
           <Box pt="30px" w="80%">
             <Flex mb="21px" align="center" justify="space-between">
-              <InputGroup w="365px">
+              <InputGroup maxWidth="365px" mr="2">
                 <InputLeftElement
                   pointerEvents="none"
                   children={<SearchIcon color="gray.300" />}
@@ -81,7 +81,7 @@ const Dashboard = () => {
                 />
               </InputGroup>
               <Flex alignItems="center">
-                <Text mr="2" fontSize="lg">
+                <Text mr="2" fontSize={['xs','xs','sm','lg']}>
                   Category:
                 </Text>
                 <Select
@@ -98,11 +98,11 @@ const Dashboard = () => {
               </Flex>
             </Flex>
 
-            {filteredArticles  &&
+            {filteredArticles &&
               filteredArticles.map((article) => (
                 <DashboardArticle key={article.id} article={article} />
               ))}
-            {!filteredArticles?.length  && (
+            {!filteredArticles?.length && (
               <Flex h="300px" alignItems="center" justifyContent="center">
                 <Text>There are not available articles now</Text>
               </Flex>

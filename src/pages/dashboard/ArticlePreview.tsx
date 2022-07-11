@@ -29,8 +29,6 @@ const ArticlePreview = () => {
 
   const [commentMessage, setCommentMessage] = useState("");
 
-  console.log(articles);
-
   const article = articles?.find((currentArticle) => currentArticle.id === id);
 
   const onSubmit = async () => {

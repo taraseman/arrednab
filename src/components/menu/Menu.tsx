@@ -117,7 +117,6 @@ function LeftMenu() {
           borderBottom="0.5px solid"
           borderColor="grey.150"
         >
-          <Logo />
           {isSmallScreen && (
             <IconButton
               bgColor="grey.100"
@@ -130,8 +129,10 @@ function LeftMenu() {
               onClick={() => setIsMenuCollapsed((prevValue) => !prevValue)}
             />
           )}
+          {!isSmallScreen && <Logo />}
+          
         </Flex>
-        <Box opacity={isSmallScreen && isMenuCollapsed ? "0" : "1"}>
+        <Box display={isSmallScreen && isMenuCollapsed ? 'none' : "block"}>
           <Text mb="20px" px="34px" color="#6F7C8B80" fontWeight="500">
             Main Menu
           </Text>
