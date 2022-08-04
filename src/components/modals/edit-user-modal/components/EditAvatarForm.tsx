@@ -13,33 +13,34 @@ import { useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import DefaultAvatarSrc from "assets/img/default-profile-icon.png";
 import { useAppSelector } from "hooks/redux";
-import { setUser } from "service/userSlice";
+import { updateUser } from "service/allUsersSlice";
 import { FirebaseError } from "@firebase/util";
 import { useEffect, useState } from "react";
-import { getDatabase, ref, onValue } from "firebase/database";
 import uploadFile from "service/firebase-service/upload-file";
 import updateDataBaseData from "service/firebase-service/update-database-data";
 
 interface Props {
   onClose: () => void;
-  tabIndex: number;
 }
 
-const EditAvatarForm = ({ onClose, tabIndex }: Props) => {
+const EditAvatarForm = ({ onClose }: Props) => {
   const dispatch = useDispatch();
   const toast = useToast();
   const user = useAppSelector((state) => state.user.user);
+  const users = useAppSelector((state) => state.users.users);
   const [isLoading, setIsLoading] = useState(false);
 
   const [file, setFile] = useState<File | null>(null);
-  const [photoUrl, setPhotoUrl] = useState(
-    user?.photoUrl ? user.photoUrl : DefaultAvatarSrc
-  );
+
+  const [photoUrl, setPhotoUrl] = useState<any>(DefaultAvatarSrc);
 
   useEffect(() => {
-    setPhotoUrl(user?.photoUrl ? user.photoUrl : DefaultAvatarSrc);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tabIndex]);
+    if (user && users) {
+      setPhotoUrl(
+        users[user.id]?.photoUrl ? users[user.id]?.photoUrl : DefaultAvatarSrc
+      );
+    }
+  }, [user, users]);
 
   const onSubmit = async () => {
     if (!user) return;
@@ -51,10 +52,6 @@ const EditAvatarForm = ({ onClose, tabIndex }: Props) => {
         const url = await uploadFile(file, `profile/${user.id}/${imageName}`);
         setPhotoUrl(url as string);
 
-        const db = getDatabase();
-
-        const currentUserRef = ref(db);
-
         await updateDataBaseData(
           {
             photoUrl: url as string,
@@ -62,9 +59,12 @@ const EditAvatarForm = ({ onClose, tabIndex }: Props) => {
           "users/" + user.id
         );
 
-        await onValue(currentUserRef, (snapshot) => {
-          dispatch(setUser(snapshot.val()));
-        });
+        dispatch(
+          updateUser({
+            id: user.id,
+            photoUrl: url as string,
+          })
+        );
 
         toast({
           status: "success",

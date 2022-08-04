@@ -36,47 +36,51 @@ const Comment = ({ comment, articleId }: Props) => {
         isOpen={!!deleteId}
         onClose={() => setDeleteId(null)}
       />
-      <Flex mb="30px">
-        <Avatar
-          mr="15px"
-          src={
-            users[comment.authorId]?.photoUrl
-              ? users[comment.authorId]?.photoUrl
-              : DefaultAvatarSrc
-          }
-          sx={{ width: "48px", height: "48px" }}
-        />
-        <Box w="100%">
-          <Flex
-            mb="6px"
-            justify="space-between"
-            alignItems="center"
-            color="grey.300"
-            align="center"
-          >
-            <Flex justify="space-between">
-              <Text fontWeight="500" mr="2">
-                {users[comment.authorId].firstName +
-                  " " +
-                  users[comment.authorId].lastName}
-              </Text>
-              <Text fontSize="14px">
-                {new Date(comment.created).toLocaleDateString("en-CA")}
-              </Text>
+      {users && (
+        <Flex mb="30px">
+          <Avatar
+            mr="15px"
+            src={
+              users[comment.authorId]?.photoUrl
+                ? users[comment.authorId]?.photoUrl
+                : DefaultAvatarSrc
+            }
+            sx={{ width: "48px", height: "48px" }}
+          />
+          <Box w="100%">
+            <Flex
+              mb="6px"
+              justify="space-between"
+              alignItems="center"
+              color="grey.300"
+              align="center"
+            >
+              <Flex justify="space-between">
+                <Text fontWeight="500" mr="2">
+                  {users[comment.authorId].firstName +
+                    " " +
+                    users[comment.authorId].lastName}
+                </Text>
+                <Text fontSize="14px">
+                  {new Date(comment.created).toLocaleDateString("en-CA")}
+                </Text>
+              </Flex>
+              {comment.authorId === loginedUserId || isAdmin ? (
+                <Button onClick={() => setDeleteId(comment.id)} variant="link">
+                  Delete
+                </Button>
+              ) : (
+                <Text>
+                  {users[comment.authorId].role === "pUser"
+                    ? "professional"
+                    : ""}
+                </Text>
+              )}
             </Flex>
-            {comment.authorId === loginedUserId || isAdmin ? (
-              <Button onClick={() => setDeleteId(comment.id)} variant="link">
-                Delete
-              </Button>
-            ) : (
-              <Text>
-                {users[comment.authorId].role === "pUser" ? "professional" : ""}
-              </Text>
-            )}
-          </Flex>
-          <Text fontSize="lg">{comment.message}</Text>
-        </Box>
-      </Flex>
+            <Text fontSize="lg">{comment.message}</Text>
+          </Box>
+        </Flex>
+      )}
     </>
   );
 };

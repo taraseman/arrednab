@@ -1,16 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { User } from "types/user-types";
 
-interface Users {[key: string]:User}
-
-interface InitialState {
-  users: Users;
+interface Users {
+  [key: string]: User;
 }
 
-const users = localStorage.getItem("users");
+interface InitialState {
+  users: Users | null;
+}
+
+interface UpdateUser {
+  id: string;
+  photoUrl?: string;
+  firstName?: string;
+  lastName?: string;
+}
 
 const initialState: InitialState = {
-    users: users ? JSON.parse(users).users : null,
+  users: null,
 };
 
 const slice = createSlice({
@@ -20,12 +27,20 @@ const slice = createSlice({
     setUsers(state, action: { payload: Users }) {
       state.users = action.payload;
     },
+    updateUser(state, action: { payload: UpdateUser }) {
+      if (state.users) {
+        state.users[action.payload.id] = {
+          ...state.users[action.payload.id],
+          ...action.payload,
+        };
+      }
+    },
     resetUsers(state) {
-      state.users = {};
+      state.users = null;
     },
   },
 });
 
-export const { setUsers, resetUsers } = slice.actions;
+export const { setUsers, resetUsers, updateUser } = slice.actions;
 
 export default slice.reducer;

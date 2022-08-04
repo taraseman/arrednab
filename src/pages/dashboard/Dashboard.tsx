@@ -13,16 +13,37 @@ import {
 import AddArticleModal from "./modals/AddArticleModal";
 import { ReactComponent as SearchIcon } from "assets/img/icons/search-icon.svg";
 import { useAppSelector } from "hooks/redux";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { setUsers } from "service/allUsersSlice";
+import { getDatabase, ref, onValue } from "firebase/database";
 import { categories } from "config/constants";
 import { debounce } from "lodash";
 import DashboardArticle from "./DashboardArticle";
+import { useAppDispatch } from "hooks/redux";
 
 const Dashboard = () => {
   const addArticleModalDiclosure = useDisclosure();
+  const dispatch = useAppDispatch();
   const articles = useAppSelector((state) => state.articles.articles);
+  const users = useAppSelector((state) => state.users.users);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchInputValue, setSearchInputValue] = useState("");
+
+  const getUsers = async () => {
+    const db = getDatabase();
+    const dbRef = ref(db, "users");
+
+    await onValue(dbRef, (snapshot) => {
+      if (snapshot.val()) {
+        dispatch(setUsers(snapshot.val()));
+      }
+    });
+  };
+
+  useEffect(() => {
+    getUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filteredArticles = useMemo(() => {
     let currentArticles = articles;
@@ -81,7 +102,7 @@ const Dashboard = () => {
                 />
               </InputGroup>
               <Flex alignItems="center">
-                <Text mr="2" fontSize={['xs','xs','sm','lg']}>
+                <Text mr="2" fontSize={["xs", "xs", "sm", "lg"]}>
                   Category:
                 </Text>
                 <Select
@@ -99,6 +120,7 @@ const Dashboard = () => {
             </Flex>
 
             {filteredArticles &&
+              users &&
               filteredArticles.map((article) => (
                 <DashboardArticle key={article.id} article={article} />
               ))}

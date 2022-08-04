@@ -9,10 +9,8 @@ interface RemovePayload {
   id: string;
 }
 
-const articles = localStorage.getItem("articles");
-
 const initialState: InitialState = {
-  articles: articles ? JSON.parse(articles).articles : null,
+  articles: [],
 };
 
 const slice = createSlice({
@@ -30,12 +28,9 @@ const slice = createSlice({
         (article) => article.id !== action.payload.id
       );
     },
-    resetArticles(state) {
-      state.articles = [];
-    },
   },
 });
 
-export const { setArticles, resetArticles } = slice.actions;
+export const { setArticles } = slice.actions;
 
 export default slice.reducer;

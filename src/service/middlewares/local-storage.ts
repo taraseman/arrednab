@@ -3,8 +3,6 @@ import { Middleware } from 'redux';
 const persistActions = [
   'auth/setAuth',
   'user/setUser',
-  'users/setUsers',
-  'articles/setArticles'
 ] as const;
 
 const localStorageMiddleware: Middleware = (store) => {

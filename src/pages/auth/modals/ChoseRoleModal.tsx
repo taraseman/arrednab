@@ -46,8 +46,6 @@ function ChoseRoleModal({ user, onClose }: Props) {
 
   const onSubmit = async (values: RoleForm) => {
     if (!user) return;
-    console.log("modal open");
-
     setIsLoading(true);
 
     const db = getDatabase();

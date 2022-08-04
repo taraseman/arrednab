@@ -19,6 +19,7 @@ import { useAppDispatch } from "hooks/redux";
 import { ReactComponent as Logo } from "assets/img/logo.svg";
 import { ReactComponent as ArrowRight } from "assets/img/icons/arrow-right.svg";
 import { useState } from "react";
+import Weather from 'components/Weather';
 
 interface IMenuItem {
   path: string;
@@ -132,7 +133,7 @@ function LeftMenu() {
           {!isSmallScreen && <Logo />}
           
         </Flex>
-        <Box display={isSmallScreen && isMenuCollapsed ? 'none' : "block"}>
+        <Box position="relative" display={isSmallScreen && isMenuCollapsed ? 'none' : "block"}>
           <Text mb="20px" px="34px" color="#6F7C8B80" fontWeight="500">
             Main Menu
           </Text>
@@ -162,8 +163,13 @@ function LeftMenu() {
               Logout
             </Button>
           </Box>
+         
+          
         </Box>
       </Box>
+      <Flex position="absolute" bottom="10px" w="100%"  justifyContent="center">
+         <Weather/>
+         </Flex>
     </Box>
   );
 }

@@ -123,6 +123,7 @@ function EditArticleModal({ isOpen, onClose, article }: Props) {
       const db = getDatabase();
       const dbRef = ref(db, "articles");
 
+     
       await onValue(dbRef, (snapshot) => {
         if (snapshot.val() !== null) {
           dispatch(

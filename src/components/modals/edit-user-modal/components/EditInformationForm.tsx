@@ -12,11 +12,9 @@ import * as yup from "yup";
 import { FormProvider, useForm } from "react-hook-form";
 import TextField from "components/common/inputs/TextField";
 import { useAppSelector } from "hooks/redux";
-import { setUser } from "service/userSlice";
-import { getDatabase, ref, onValue } from "firebase/database";
-import { FirebaseError } from "@firebase/util";
 import { useEffect, useState } from "react";
 import updateDataBaseData from "service/firebase-service/update-database-data";
+import { updateUser } from "service/allUsersSlice";
 
 interface EditUserInformationForm {
   firstName: string;
@@ -42,18 +40,21 @@ const EditInformationForm = ({ onClose, tabIndex }: Props) => {
   const dispatch = useDispatch();
   const toast = useToast();
   const user = useAppSelector((state) => state.user.user);
+  const users = useAppSelector((state) => state.users.users);
   const [isLoading, setIsLoading] = useState(false);
 
-  const defaultValues = user
-    ? {
-        firstName: user.firstName,
-        lastName: user.lastName,
-      }
-    : {};
+  const defaultValues =
+    user && users
+      ? {
+          firstName: users[user.id].firstName,
+          lastName: users[user.id].lastName,
+        }
+      : {};
 
   useEffect(() => {
     form.reset(defaultValues);
-  }, [tabIndex]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, users]);
 
   const form = useForm<EditUserInformationForm>({
     resolver: yupResolver<yup.AnyObjectSchema>(schema),
@@ -63,12 +64,7 @@ const EditInformationForm = ({ onClose, tabIndex }: Props) => {
 
   const onSubmit = async (values: EditUserInformationForm) => {
     if (!user) return;
-
     setIsLoading(true);
-
-    const db = getDatabase();
-
-    const currentUserRef = ref(db, "users/" + user.id);
 
     try {
       await updateDataBaseData(
@@ -79,9 +75,13 @@ const EditInformationForm = ({ onClose, tabIndex }: Props) => {
         "users/" + user.id
       );
 
-      await onValue(currentUserRef, (snapshot) => {
-        dispatch(setUser(snapshot.val()));
-      });
+      dispatch(
+        updateUser({
+          id: user.id,
+          firstName: values.firstName,
+          lastName: values.lastName,
+        })
+      );
 
       toast({
         status: "success",

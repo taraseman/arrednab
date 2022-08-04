@@ -58,7 +58,7 @@ const EditUserModal = ({ isOpen, onClose }: Props) => {
                 <EditInformationForm onClose={onClose} tabIndex={tabIndex} />
               </TabPanel>
               <TabPanel>
-              <EditAvatarForm onClose={onClose} tabIndex={tabIndex}/>
+              <EditAvatarForm onClose={onClose} />
               </TabPanel>
               <TabPanel>
                 <EditPasswordForm onClose={onClose} tabIndex={tabIndex}/>

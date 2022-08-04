@@ -10,7 +10,7 @@ import config from "config/config";
 import toast from "utils/toast";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: `${config.apiUrl}/api/`,
+  baseUrl: `${config.apiUrl}`,
 });
 
 export interface IQueryArgs extends FetchArgs {
@@ -25,7 +25,7 @@ const baseQueryWithToast: BaseQueryFn<IQueryArgs> = async (
   const response = await baseQuery(args, api, extraOptions);
   let transformedResponse = produce(response, (draft) => {
     if (draft.data) {
-      draft.data = (draft.data as any).result as typeof response.data;
+      draft.data = draft.data as any as typeof response.data;
     }
   });
   if (transformedResponse.error) {
@@ -33,21 +33,13 @@ const baseQueryWithToast: BaseQueryFn<IQueryArgs> = async (
 
     if (showToast) {
       const message =
-        err?.message && typeof err?.message === "string"
-          ? err.message
-          : err.message.message;
-      const hasVariable = /{{[^)]*}}/.test(message);
-      const variablesValues = hasVariable
-        ? {
-            ...err.metaData,
-          }
-        : undefined;
+        err?.message && typeof err?.message === "string" ? err.message : "";
 
       toast({
         status: "error",
         title: "Error",
         description: message
-          ? (message as string, variablesValues)
+          ? (message as string)
           : "Oh no, there was an error!",
         isClosable: true,
       });
@@ -60,7 +52,6 @@ const baseQueryWithToast: BaseQueryFn<IQueryArgs> = async (
 const api = createApi({
   baseQuery: baseQueryWithToast,
   endpoints: () => ({}),
-  tagTypes: ["Proposal"],
 });
 
 export default api;

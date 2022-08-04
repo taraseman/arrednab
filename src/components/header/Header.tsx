@@ -18,21 +18,17 @@ import { useEffect } from "react";
 import { Article } from "types/article-types";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { setArticles } from "service/articlesSlice";
-import { setUsers } from "service/allUsersSlice";
 import { useAppDispatch } from "hooks/redux";
-import {
-  getAuth,
-  onAuthStateChanged,
-} from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const Header = () => {
   const dispatch = useAppDispatch();
   const editUserModalDisclosure = useDisclosure();
 
   const user = useAppSelector((state) => state.user.user);
+  const users = useAppSelector((state) => state.users.users);
 
   const getArticles = async () => {
-    
     const db = getDatabase();
     const dbRef = ref(db, "articles");
 
@@ -43,29 +39,15 @@ const Header = () => {
         );
       }
     });
-
-    
-  };
-  const getUsers = async () => {
-    const db = getDatabase();
-    const dbRef = ref(db, "users");
-
-    await onValue(dbRef, (snapshot) => {
-      if (snapshot.val()) {
-        dispatch(setUsers(snapshot.val()));
-      }
-    });
   };
 
   useEffect(() => {
     getArticles();
-    getUsers();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     const auth = getAuth();
-
     onAuthStateChanged(auth, function (user) {
       if (user) {
         // User is signed in.
@@ -73,7 +55,7 @@ const Header = () => {
         dispatch(resetAuth());
       }
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -93,15 +75,19 @@ const Header = () => {
         borderLeft="0"
       >
         <Box>
-          
-          <Avatar
-            mr="15px"
-            src={user?.photoUrl ? user.photoUrl : DefaultAvatarSrc}
-            sx={{ width: '48px', height: '48px', cursor: "pointer" }}
-          />
-
+          {user && users && (
+            <Avatar
+              mr="15px"
+              src={
+                users[user?.id]?.photoUrl
+                  ? users[user?.id]?.photoUrl
+                  : DefaultAvatarSrc
+              }
+              sx={{ width: "48px", height: "48px", cursor: "pointer" }}
+            />
+          )}
         </Box>
-        {user && (
+        {user && users && (
           <Menu>
             <MenuButton
               as={Button}
@@ -109,7 +95,7 @@ const Header = () => {
               rightIcon={<ChevronDown />}
               _hover={{ color: "primary.500" }}
             >
-              {user.firstName} {user.lastName}
+              {users[user?.id].firstName} {users[user?.id].lastName}
             </MenuButton>
             <MenuList>
               <MenuItem onClick={editUserModalDisclosure.onOpen}>Edit</MenuItem>

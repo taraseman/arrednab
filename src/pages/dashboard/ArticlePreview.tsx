@@ -66,7 +66,7 @@ const ArticlePreview = () => {
   return (
     <Box px={["30px", "50px", "100px", "100px"]} py="30px">
       <Flex>
-        {article ? (
+        {article && users ? (
           <Box pt="30px" w="100%">
             <DashboardArticle article={article} />
 
@@ -91,13 +91,18 @@ const ArticlePreview = () => {
             </Flex>
 
             <Flex mb="2" alignItems="center">
-              <Avatar
-                mr="15px"
-                src={
-                  loggedUser?.photoUrl ? loggedUser.photoUrl : DefaultAvatarSrc
-                }
-                sx={{ width: "48px", height: "48px", cursor: "pointer" }}
-              />
+              {loggedUser && (
+                <Avatar
+                  mr="15px"
+                  src={
+                    users[loggedUser.id].photoUrl
+                      ? users[loggedUser.id].photoUrl
+                      : DefaultAvatarSrc
+                  }
+                  sx={{ width: "48px", height: "48px", cursor: "pointer" }}
+                />
+              )}
+
               <Textarea
                 backgroundColor="white"
                 placeholder="Write your comment..."

@@ -15,7 +15,7 @@ import useRoleCheck from "hooks/role-check";
 import EditArticleModal from "./modals/EditArticleModal";
 import ConfirmDeleteModal from "components/modals/ConfirmDeleteModal";
 import { getDatabase, ref, remove } from "firebase/database";
-import {useHistory} from 'react-router-dom'
+import { useHistory } from "react-router-dom";
 
 interface Props {
   article: Article;
@@ -26,7 +26,7 @@ const DashboardArticle = ({ article }: Props) => {
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const loginedUserId = useAppSelector((state) => state.auth.id);
   const editArticleDisclosure = useDisclosure();
-  const history = useHistory()
+  const history = useHistory();
 
   const isWithoutSeeMoreButton = article.description.length <= 160;
 
@@ -66,8 +66,8 @@ const DashboardArticle = ({ article }: Props) => {
           borderTopRadius="6px"
           src={article.imageUrl}
           sx={{ width: "100%" }}
-          _hover={{cursor: 'pointer'}}
-          onClick={()=>history.push(`/dashboard/${article.id}`)}
+          _hover={{ cursor: "pointer" }}
+          onClick={() => history.push(`/dashboard/${article.id}`)}
         />
         <Box p="15px 25px 16px 24px">
           <Flex
@@ -103,23 +103,29 @@ const DashboardArticle = ({ article }: Props) => {
 
           <Flex justify="space-between" alignItems="center">
             <Flex alignItems="center">
-              <Flex alignItems="center" mr="4">
-                <Avatar
-                  mr="15px"
-                  src={
-                    users[article.authorId]?.photoUrl
-                      ? users[article.authorId]?.photoUrl
-                      : DefaultAvatarSrc
-                  }
-                  sx={{ width: "36px", height: "36px" }}
-                />
-                <Text>
-                  {users[article.authorId].firstName +
-                    " " +
-                    users[article.authorId].lastName}
-                    <Text color="grey.300" as="span">{users[article.authorId].role === 'pUser'? ' (professional)':''}</Text>
-                </Text>
-              </Flex>
+              {users && (
+                <Flex alignItems="center" mr="4">
+                  <Avatar
+                    mr="15px"
+                    src={
+                      users[article.authorId]?.photoUrl
+                        ? users[article.authorId]?.photoUrl
+                        : DefaultAvatarSrc
+                    }
+                    sx={{ width: "36px", height: "36px" }}
+                  />
+                  <Text>
+                    {users[article.authorId].firstName +
+                      " " +
+                      users[article.authorId].lastName}
+                    <Text color="grey.300" as="span">
+                      {users[article.authorId].role === "pUser"
+                        ? " (professional)"
+                        : ""}
+                    </Text>
+                  </Text>
+                </Flex>
+              )}
 
               {(article.authorId === loginedUserId || isAdmin) && (
                 <Flex>
