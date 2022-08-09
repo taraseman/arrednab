@@ -32,7 +32,9 @@ const EditAvatarForm = ({ onClose }: Props) => {
 
   const [file, setFile] = useState<File | null>(null);
 
-  const [photoUrl, setPhotoUrl] = useState<any>(DefaultAvatarSrc);
+  const [photoUrl, setPhotoUrl] = useState<string | undefined>(
+    DefaultAvatarSrc
+  );
 
   useEffect(() => {
     if (user && users) {
@@ -81,12 +83,12 @@ const EditAvatarForm = ({ onClose }: Props) => {
     setIsLoading(false);
   };
 
-  const handleChange = (e: any) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFile(file);
-      setPhotoUrl(URL.createObjectURL(file));
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e?.target?.files?.[0];
+    if (!file) return;
+
+    setFile(file);
+    setPhotoUrl(URL.createObjectURL(file));
   };
 
   return (

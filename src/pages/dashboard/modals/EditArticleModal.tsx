@@ -123,7 +123,6 @@ function EditArticleModal({ isOpen, onClose, article }: Props) {
       const db = getDatabase();
       const dbRef = ref(db, "articles");
 
-     
       await onValue(dbRef, (snapshot) => {
         if (snapshot.val() !== null) {
           dispatch(
@@ -148,13 +147,12 @@ function EditArticleModal({ isOpen, onClose, article }: Props) {
     setIsLoading(false);
   };
 
-  const handleChange = (e: any) => {
-    const file = e.target.files[0];
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e?.target?.files?.[0];
+    if (!file) return;
 
-    if (file) {
-      setFile(file);
-      setPhotoUrl(URL.createObjectURL(file));
-    }
+    setFile(file);
+    setPhotoUrl(URL.createObjectURL(file));
   };
 
   return (

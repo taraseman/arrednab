@@ -112,13 +112,12 @@ function AddArticleModal({ isOpen, onClose }: Props) {
     setIsLoading(false);
   };
 
-  const handleChange = (e: any) => {
-    const file = e.target.files[0];
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e?.target?.files?.[0];
+    if (!file) return;
 
-    if (file) {
-      setFile(file);
-      setPhotoUrl(URL.createObjectURL(file));
-    }
+    setFile(file);
+    setPhotoUrl(URL.createObjectURL(file));
   };
 
   return (
