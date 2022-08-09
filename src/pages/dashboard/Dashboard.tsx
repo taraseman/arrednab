@@ -84,7 +84,7 @@ const Dashboard = () => {
           </Button>
         </Flex>
         <Flex>
-          <Box pt="30px" w="80%">
+          <Box pt="30px" w={['100%', '100%', '80%', '80%']}>
             <Flex mb="21px" align="center" justify="space-between">
               <InputGroup maxWidth="365px" mr="2">
                 <InputLeftElement

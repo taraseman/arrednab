@@ -128,7 +128,7 @@ const DashboardArticle = ({ article }: Props) => {
               )}
 
               {(article.authorId === loginedUserId || isAdmin) && (
-                <Flex>
+                <Flex flexWrap="wrap">
                   <Button
                     onClick={() => editArticleDisclosure.onOpen()}
                     mr="2"

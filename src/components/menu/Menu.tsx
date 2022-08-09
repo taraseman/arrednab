@@ -167,7 +167,7 @@ function LeftMenu() {
           </Box>
         </Box>
       </Box>
-      <Flex position="absolute" bottom="10px" w="100%" justifyContent="center">
+      <Flex display={isSmallScreen && isMenuCollapsed ? "none" : "flex"} position="relative" top="600px" w="100%" justifyContent="center">
         <Weather />
       </Flex>
     </Box>
