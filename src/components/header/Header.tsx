@@ -20,6 +20,7 @@ import { getDatabase, ref, onValue } from "firebase/database";
 import { setArticles } from "service/articlesSlice";
 import { useAppDispatch } from "hooks/redux";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import NetworkStatus from 'components/NetworkStatus';
 
 const Header = () => {
   const dispatch = useAppDispatch();
@@ -64,6 +65,7 @@ const Header = () => {
         isOpen={editUserModalDisclosure.isOpen}
         onClose={editUserModalDisclosure.onClose}
       />
+      {/* <NetworkStatus/> */}
       <Flex
         justify="flex-end"
         px="34px"
