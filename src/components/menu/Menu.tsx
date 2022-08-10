@@ -13,7 +13,7 @@ import { NavLink } from "react-router-dom";
 import styled from "@emotion/styled";
 import { ReactComponent as DashboardIcon } from "assets/img/icons/dashboard.svg";
 import { ReactComponent as LogoutIcon } from "assets/img/icons/logout.svg";
-import { resetAuth } from "service/auth/authSlice";
+import { resetAuth } from "service/authSlice";
 import { useHistory } from "react-router";
 import { useAppDispatch } from "hooks/redux";
 import { ReactComponent as Logo } from "assets/img/logo.svg";
@@ -94,6 +94,7 @@ function LeftMenu() {
   const logout = () => {
     dispatch(resetAuth());
     sessionStorage.clear();
+    localStorage.clear();
     history.push("/login");
   };
 

@@ -1,5 +1,8 @@
 import { Box } from "@chakra-ui/react";
 import { toast } from "react-toastify";
+import getArticles from "service/get-data-fanctions/get-articles";
+import getUsers from "service/get-data-fanctions/get-users";
+import { useAppDispatch } from "hooks/redux";
 
 const NetStatusNotification = (isOnline: boolean, message: string) => {
   if (isOnline) {
@@ -26,14 +29,16 @@ const NetStatusNotification = (isOnline: boolean, message: string) => {
 };
 
 const NetworkStatus = () => {
+  const dispatch = useAppDispatch();
+
   window.addEventListener("load", () => {
-  
-    window.addEventListener("online", () => {
+    window.addEventListener("online", async () => {
       NetStatusNotification(true, "You are online back !!");
+      await getArticles(dispatch);
+      await getUsers(dispatch);
     });
 
     window.addEventListener("offline", () => {
-      console.log("off");
       NetStatusNotification(false, "Lost Network Connection !!");
     });
   });

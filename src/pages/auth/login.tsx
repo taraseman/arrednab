@@ -21,7 +21,7 @@ import loginImageUrl from "assets/img/login.png";
 import { EMAIL_REGEX } from "config/constants";
 import * as yup from "yup";
 import { useDispatch } from "react-redux";
-import { setAuth } from "service/auth/authSlice";
+import { setAuth } from "service/authSlice";
 import { setUser } from "service/userSlice";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { getDatabase, ref, onValue } from "firebase/database";

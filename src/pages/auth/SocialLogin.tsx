@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { ReactComponent as GoogleLogo } from "assets/img/icons/google-icon.svg";
 import { useHistory } from "react-router-dom";
-import { setAuth } from "service/auth/authSlice";
+import { setAuth } from "service/authSlice";
 import { FirebaseError } from "@firebase/util";
 import { setUser } from "service/userSlice";
 import { ReactComponent as FacebookLogo } from "assets/img/icons/facebook-icon.svg";

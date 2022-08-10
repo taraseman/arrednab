@@ -14,12 +14,11 @@ import AddArticleModal from "./modals/AddArticleModal";
 import { ReactComponent as SearchIcon } from "assets/img/icons/search-icon.svg";
 import { useAppSelector } from "hooks/redux";
 import { useEffect, useMemo, useState } from "react";
-import { setUsers } from "service/allUsersSlice";
-import { getDatabase, ref, onValue } from "firebase/database";
 import { categories } from "config/constants";
 import { debounce } from "lodash";
 import DashboardArticle from "./DashboardArticle";
 import { useAppDispatch } from "hooks/redux";
+import getUsers from "service/get-data-fanctions/get-users";
 
 const Dashboard = () => {
   const addArticleModalDiclosure = useDisclosure();
@@ -29,19 +28,8 @@ const Dashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchInputValue, setSearchInputValue] = useState("");
 
-  const getUsers = async () => {
-    const db = getDatabase();
-    const dbRef = ref(db, "users");
-
-    await onValue(dbRef, (snapshot) => {
-      if (snapshot.val()) {
-        dispatch(setUsers(snapshot.val()));
-      }
-    });
-  };
-
   useEffect(() => {
-    getUsers();
+    getUsers(dispatch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -84,7 +72,7 @@ const Dashboard = () => {
           </Button>
         </Flex>
         <Flex>
-          <Box pt="30px" w={['100%', '100%', '80%', '80%']}>
+          <Box pt="30px" w={["100%", "100%", "80%", "80%"]}>
             <Flex mb="21px" align="center" justify="space-between">
               <InputGroup maxWidth="365px" mr="2">
                 <InputLeftElement

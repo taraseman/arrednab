@@ -13,14 +13,11 @@ import DefaultAvatarSrc from "assets/img/default-profile-icon.png";
 import { ReactComponent as ChevronDown } from "assets/img/icons/chevron-down.svg";
 import { useAppSelector } from "hooks/redux";
 import EditUserModal from "components/modals/edit-user-modal/EditUserModal";
-import { resetAuth } from "service/auth/authSlice";
+import { resetAuth } from "service/authSlice";
 import { useEffect } from "react";
-import { Article } from "types/article-types";
-import { getDatabase, ref, onValue } from "firebase/database";
-import { setArticles } from "service/articlesSlice";
 import { useAppDispatch } from "hooks/redux";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import NetworkStatus from 'components/NetworkStatus';
+import getArticles from "service/get-data-fanctions/get-articles";
 
 const Header = () => {
   const dispatch = useAppDispatch();
@@ -29,21 +26,8 @@ const Header = () => {
   const user = useAppSelector((state) => state.user.user);
   const users = useAppSelector((state) => state.users.users);
 
-  const getArticles = async () => {
-    const db = getDatabase();
-    const dbRef = ref(db, "articles");
-
-    await onValue(dbRef, (snapshot) => {
-      if (snapshot.val() !== null) {
-        dispatch(
-          setArticles(Object.values(snapshot.val()).reverse() as Article[])
-        );
-      }
-    });
-  };
-
   useEffect(() => {
-    getArticles();
+    getArticles(dispatch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -65,7 +49,6 @@ const Header = () => {
         isOpen={editUserModalDisclosure.isOpen}
         onClose={editUserModalDisclosure.onClose}
       />
-      {/* <NetworkStatus/> */}
       <Flex
         justify="flex-end"
         px="34px"
