@@ -13,12 +13,37 @@ import {
 import AddArticleModal from "./modals/AddArticleModal";
 import { ReactComponent as SearchIcon } from "assets/img/icons/search-icon.svg";
 import { useAppSelector } from "hooks/redux";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { categories } from "config/constants";
 import { debounce } from "lodash";
+import { Article } from "types/article-types";
 import DashboardArticle from "./DashboardArticle";
 import { useAppDispatch } from "hooks/redux";
 import getUsers from "service/get-data-fanctions/get-users";
+
+export const filterArticles = (
+  articles: Article[],
+  selectedCategory: string,
+  searchInputValue: string
+): Article[] => {
+  let currentArticles = articles;
+
+  if (selectedCategory) {
+    currentArticles = currentArticles.filter(
+      (article) => article.category === selectedCategory
+    );
+  }
+
+  if (searchInputValue) {
+    currentArticles = currentArticles.filter(
+      (article) =>
+        article.title.includes(searchInputValue) ||
+        article.description.includes(searchInputValue)
+    );
+  }
+
+  return currentArticles;
+};
 
 const Dashboard = () => {
   const addArticleModalDiclosure = useDisclosure();
@@ -33,25 +58,11 @@ const Dashboard = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const filteredArticles = useMemo(() => {
-    let currentArticles = articles;
-
-    if (selectedCategory) {
-      currentArticles = currentArticles.filter(
-        (article) => article.category === selectedCategory
-      );
-    }
-
-    if (searchInputValue) {
-      currentArticles = currentArticles.filter(
-        (article) =>
-          article.title.includes(searchInputValue) ||
-          article.description.includes(searchInputValue)
-      );
-    }
-
-    return currentArticles;
-  }, [articles, selectedCategory, searchInputValue]);
+  const filteredArticles = filterArticles(
+    articles,
+    selectedCategory,
+    searchInputValue
+  );
 
   return (
     <>

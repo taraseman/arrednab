@@ -1,4 +1,4 @@
-export type UserRole = "pUser" | "pUser" | "admin";
+export type UserRole = "nUser" | "pUser" | "admin";
 
 export const Role = {
   pUser: "pUser",

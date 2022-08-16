@@ -31,6 +31,6 @@ const slice = createSlice({
   },
 });
 
-export const { setArticles } = slice.actions;
+export const { setArticles, addArticle, removeArticle } = slice.actions;
 
 export default slice.reducer;

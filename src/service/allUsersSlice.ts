@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { User } from "types/user-types";
 
-interface Users {
+export interface Users {
   [key: string]: User;
 }
 
@@ -9,7 +9,7 @@ interface InitialState {
   users: Users | null;
 }
 
-interface UpdateUser {
+export interface UpdateUser {
   id: string;
   photoUrl?: string;
   firstName?: string;
@@ -28,7 +28,7 @@ const slice = createSlice({
       state.users = action.payload;
     },
     updateUser(state, action: { payload: UpdateUser }) {
-      if (state.users) {
+      if (state.users && state.users[action.payload.id]) {
         state.users[action.payload.id] = {
           ...state.users[action.payload.id],
           ...action.payload,

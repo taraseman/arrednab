@@ -179,6 +179,7 @@ const SignUp = () => {
                 />
 
                 <SelectField
+                  data-testid="select-role"
                   name="role"
                   label="Position in Journalism"
                   placeholder="Chose your position"
@@ -232,6 +233,7 @@ const SignUp = () => {
                 />
                 <Flex fontSize="md" alignItems="center">
                   <Checkbox
+                    data-testid="signup-checkbox"
                     mr="2"
                     isChecked={isTermsPolicyAgreed}
                     onChange={(e) => setIsTermsPolicyAgreed(e.target.checked)}
