@@ -2,7 +2,7 @@
 
 describe("Login page", () => {
   beforeEach(() => {
-    cy.visit(`/login`);
+    cy.visit(`${Cypress.env().baseUrl}/login`);
   });
 
   it("should open login page", () => {
@@ -32,9 +32,10 @@ describe("Login page", () => {
   });
   it("test login", () => {
     cy.findByPlaceholder("Enter your email address")
-    .type('seman6745@gmail.com');
+    .type('seman6745+testNovice@gmail.com');
     cy.findByPlaceholder("Enter your password")
     .type('Test12345');
     cy.contains('button', 'Sign In').click()
+    cy.contains('.chakra-heading', 'Articles Dashboard')
   });
 });

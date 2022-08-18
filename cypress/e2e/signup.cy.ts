@@ -1,59 +1,68 @@
 /// <reference types="cypress" />
 const { generateUser } = require("../support/generate.js");
+const { signup } = require("../support/cypress-utils.js");
 
 describe("Signup page", () => {
   beforeEach(() => {
-    cy.visit("/signup");
+    cy.visit(`${Cypress.env().baseUrl}/signup`);
   });
 
   it("should open Signup page", () => {
     cy.get(".chakra-heading").should("contain.text", "Sign Up");
   });
 
+  it("should have possibility to read terms and policy", () => {
+    cy.contains("a", "Terms and Policy").click();
+    cy.contains("button", "Back").click();
+
+    cy.get(".chakra-heading").should("contain.text", "Sign Up");
+  });
+
   it("should allow to register a new user", () => {
     const { userFirstName, userLastName, email } = generateUser();
 
-    cy.findByPlaceholder("Enter your First Name").type(userFirstName);
-    cy.findByPlaceholder("Enter your Last Name").type(userLastName);
-    cy.findByPlaceholder("Enter your email").type(email);
-    cy.get('[data-testid="select-role"]').select("nUser");
-
-    cy.findByPlaceholder("Enter your password").type("Test12345");
-    cy.findByPlaceholder("Confirm your password").type("Test12345");
-    cy.get(".chakra-checkbox").click();
+    signup(
+      {
+        firstName: userFirstName,
+        lastName: userLastName,
+        email: email,
+        role: "nUser",
+        password: "Test123454321",
+      },
+      cy
+    );
 
     cy.contains("button", "Get started now").click();
-
     cy.contains(".chakra-toast", "User registered successfully");
-
-    // cy.url()
-    // .should('equl', Cypress.config().baseUrl + '/login')
-
-    //https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyBiylN50xSWKqsN9mqCVWLOYj9Bwfle_6c
   });
 
   it("should no ellow register with an existing email", () => {
     const { userFirstName, userLastName, email } = generateUser();
-
-    cy.findByPlaceholder("Enter your First Name").type(userFirstName);
-    cy.findByPlaceholder("Enter your Last Name").type(userLastName);
-    cy.findByPlaceholder("Enter your email").type(email);
-    cy.get('[data-testid="select-role"]').select("nUser");
-    cy.findByPlaceholder("Enter your password").type("Test12345");
-    cy.findByPlaceholder("Confirm your password").type("Test12345");
-    cy.get(".chakra-checkbox").click();
+    signup(
+      {
+        firstName: userFirstName,
+        lastName: userLastName,
+        email: email,
+        role: "nUser",
+        password: "Test123454321",
+      },
+      cy
+    );
     cy.contains("button", "Get started now").click();
     cy.contains(".chakra-toast", "User registered successfully");
 
     cy.get(".css-vczd0v").click();
 
-    cy.findByPlaceholder("Enter your First Name").type(userFirstName + "n");
-    cy.findByPlaceholder("Enter your Last Name").type(userLastName + "n");
-    cy.findByPlaceholder("Enter your email").type(email);
-    cy.get('[data-testid="select-role"]').select("nUser");
-    cy.findByPlaceholder("Enter your password").type("Test12345");
-    cy.findByPlaceholder("Confirm your password").type("Test12345");
-    cy.get(".chakra-checkbox").click();
+    signup(
+      {
+        firstName: userFirstName,
+        lastName: userLastName,
+        email: email,
+        role: "nUser",
+        password: "Test123454321",
+      },
+      cy
+    );
     cy.contains("button", "Get started now").click();
     cy.contains(
       ".chakra-toast",
