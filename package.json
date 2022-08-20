@@ -3,24 +3,62 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@chakra-ui/react": "^1.8.3",
+    "@chakra-ui/theme-tools": "^1.1.7",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
+    "@firebase/app-types": "^0.7.0",
+    "@hookform/resolvers": "^2.8.8",
+    "@reduxjs/toolkit": "^1.7.2",
     "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^12.0.0",
+    "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^13.2.1",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.13",
-    "@types/react": "^17.0.20",
-    "@types/react-dom": "^17.0.9",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/styled-components": "5.1.9",
+    "firebase": "^9.6.9",
+    "framer-motion": "^4",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.0",
     "react": "^17.0.2",
+    "react-awesome-reveal": "^3.8.1",
     "react-dom": "^17.0.2",
+    "react-hook-form": "^7.27.1",
+    "react-i18next": "^11.15.4",
+    "react-redux": "^7.2.6",
+    "react-reveal": "^1.2.2",
+    "react-router": "5.2.0",
+    "react-router-dom": "5.2.0",
     "react-scripts": "5.0.0",
-    "typescript": "^4.4.2",
-    "web-vitals": "^2.1.0"
+    "react-toastify": "^9.0.8",
+    "typescript": "^4.7.4",
+    "uuid": "^8.3.2",
+    "uuidv4": "^6.2.13",
+    "web-vitals": "^2.1.0",
+    "workbox-background-sync": "^6.5.3",
+    "workbox-broadcast-update": "^6.5.3",
+    "workbox-cacheable-response": "^6.5.3",
+    "workbox-core": "^6.5.3",
+    "workbox-expiration": "^6.5.3",
+    "workbox-google-analytics": "^6.5.3",
+    "workbox-navigation-preload": "^6.5.3",
+    "workbox-precaching": "^6.5.3",
+    "workbox-range-requests": "^6.5.3",
+    "workbox-routing": "^6.5.3",
+    "workbox-strategies": "^6.5.3",
+    "workbox-streams": "^6.5.3",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx,json,css,scss,md}' --no-error-on-unmatched-pattern",
+    "cypress": "cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -39,5 +77,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^7.4.0",
+    "cypress": "^10.6.0",
+    "jest": "^28.1.3",
+    "ts-jest": "^28.0.8"
   }
 }

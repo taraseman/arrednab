@@ -1,25 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Suspense } from "react";
+import { ChakraProvider } from "@chakra-ui/react";
+import { Provider } from "react-redux";
+import FullPageLoading from "components/loading/full-page-loading";
+import { Router } from "react-router-dom";
+import history from "utils/history";
+import theme from "theme/theme";
+import store from "service/store";
+import Routes from "./routes";
+import NetworkStatus from "./components/NetworkStatus";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ChakraProvider theme={theme}>
+      <Provider store={store}>
+        <Router history={history}>
+          <Suspense fallback={<FullPageLoading />}>
+            <ToastContainer autoClose={3000} hideProgressBar />
+            <NetworkStatus />
+            <Routes />
+          </Suspense>
+        </Router>
+      </Provider>
+    </ChakraProvider>
   );
 }
 
