@@ -61,6 +61,7 @@ const EditPasswordForm = ({ onClose, tabIndex }: Props) => {
 
   useEffect(() => {
     form.reset();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabIndex]);
 
   const form = useForm<EditUserPasswordForm>({
