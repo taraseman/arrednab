@@ -28,7 +28,7 @@ const Comment = ({ comment, articleId }: Props) => {
     <>
       <ConfirmDeleteModal
         title="Do you really want to delete this comment?"
-        successMessage="Comment deleted successfully"
+        successMessage="Comment removed successfully"
         deleteAction={async () => {
           if (!deleteId) return;
           removeComment(deleteId);
