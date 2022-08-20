@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
-import { Switch, Route, useRouteMatch, useLocation } from "react-router-dom";
-import { Flex, Box, Grid, useMediaQuery } from "@chakra-ui/react";
+import { Switch, Route, useLocation } from "react-router-dom";
+import { Flex, Box, useMediaQuery } from "@chakra-ui/react";
 import Header from "components/header/Header";
 import LeftMenu from "components/menu/Menu";
 
