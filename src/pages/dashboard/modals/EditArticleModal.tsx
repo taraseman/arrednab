@@ -24,13 +24,12 @@ import TextField from "components/common/inputs/TextField";
 import { useEffect, useState } from "react";
 import { Article } from "types/article-types";
 import { v4 as uuidv4 } from "uuid";
-import setDataBaseData from "service/firebase-service/set-database-data";
 import uploadFile from "service/firebase-service/upload-file";
 import { useAppSelector } from "hooks/redux";
 import { setArticles } from "service/articlesSlice";
 import { useAppDispatch } from "hooks/redux";
 import { FirebaseError } from "@firebase/util";
-import { getDatabase, ref, onValue, push, set } from "firebase/database";
+import { getDatabase, ref, onValue } from "firebase/database";
 import SelectField from "components/common/inputs/SelectField";
 import { categories } from "config/constants";
 import { Categories } from "types/article-types";
@@ -84,6 +83,7 @@ function EditArticleModal({ isOpen, onClose, article }: Props) {
       });
       setPhotoUrl(article.imageUrl);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   const handleClose = () => {
