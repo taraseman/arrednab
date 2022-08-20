@@ -79,11 +79,12 @@ const Header = () => {
               variant="link"
               rightIcon={<ChevronDown />}
               _hover={{ color: "primary.500" }}
+              data-testid="menu-button-header"
             >
               {users[user?.id].firstName} {users[user?.id].lastName}
             </MenuButton>
             <MenuList>
-              <MenuItem onClick={editUserModalDisclosure.onOpen}>Edit</MenuItem>
+              <MenuItem onClick={editUserModalDisclosure.onOpen} data-testid="menu-button-edit-option">Edit</MenuItem>
             </MenuList>
           </Menu>
         )}

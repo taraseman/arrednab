@@ -121,6 +121,7 @@ const EditInformationForm = ({ onClose, tabIndex }: Props) => {
               form.reset();
               onClose();
             }}
+            data-testid="edit-user-info-cancel"
           >
             Cancel
           </Button>
@@ -132,6 +133,7 @@ const EditInformationForm = ({ onClose, tabIndex }: Props) => {
             w="120px"
             ml="34px"
             type="submit"
+            data-testid="edit-user-info-save"
           >
             Save
           </Button>

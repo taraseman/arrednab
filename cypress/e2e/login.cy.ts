@@ -31,10 +31,12 @@ describe("Login page", () => {
     cy.get(".css-1e075yg");
   });
   it("test login", () => {
+    const email = "seman6745+testNovice34@gmail.com";
+    const password = "Test12345";
     cy.findByPlaceholder("Enter your email address")
-    .type('seman6745+testNovice@gmail.com');
+    .type(email);
     cy.findByPlaceholder("Enter your password")
-    .type('Test12345');
+    .type(password);
     cy.contains('button', 'Sign In').click()
     cy.contains('.chakra-heading', 'Articles Dashboard')
   });

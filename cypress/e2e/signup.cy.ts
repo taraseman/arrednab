@@ -69,15 +69,4 @@ describe("Signup page", () => {
       "Firebase: Error (auth/email-already-in-use)."
     );
   });
-
-  // it("should contains login fields: email password", () => {
-  //   cy.findByPlaceholder("Enter your email address");
-  //   cy.findByPlaceholder("Enter your password");
-  // });
-  // it("should contain google login button", () => {
-  //   cy.get(".css-1gh7dcb");
-  // });
-  // it("should contain facebook login button", () => {
-  //   cy.get(".css-1e075yg");
-  // });
 });

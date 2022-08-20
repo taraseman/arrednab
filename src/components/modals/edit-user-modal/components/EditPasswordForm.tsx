@@ -140,6 +140,7 @@ const EditPasswordForm = ({ onClose, tabIndex }: Props) => {
               form.reset();
               onClose();
             }}
+            data-testid="edit-user-password-cancel"
           >
             Cancel
           </Button>
@@ -151,6 +152,7 @@ const EditPasswordForm = ({ onClose, tabIndex }: Props) => {
             w="120px"
             ml="34px"
             type="submit"
+            data-testid="edit-user-password-save"
           >
             Save
           </Button>

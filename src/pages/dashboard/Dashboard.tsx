@@ -107,6 +107,7 @@ const Dashboard = () => {
                 <Select
                   bgColor="white"
                   onChange={(e) => setSelectedCategory(e.target.value)}
+                  data-testid="dashbord-select-category"
                 >
                   <option value="">all</option>
                   {categories.map((category) => (

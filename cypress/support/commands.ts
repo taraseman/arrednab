@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+const { login } = require("../support/cypress-utils.js");
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -25,10 +26,16 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
+interface Login {
+  email: string;
+  password: string;
+}
+
 declare global {
   namespace Cypress {
     interface Chainable {
       findByPlaceholder(placeholder: string): Chainable<void>;
+      login(loginData?: Login): Chainable<void>;
     }
   }
 }
@@ -37,6 +44,16 @@ Cypress.Commands.add("findByPlaceholder", (placeholder) => {
   cy.get(`[placeholder="${placeholder}"]`);
 });
 
+Cypress.Commands.add("login", (loginData?: Login) => {
+  const email = "seman6745+testNovice34@gmail.com";
+  const password = "Test12345";
+  login(
+    loginData || {
+      email,
+      password,
+    },
+    cy
+  );
+});
 
 export {};
-

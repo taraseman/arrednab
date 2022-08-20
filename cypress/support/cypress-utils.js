@@ -11,10 +11,11 @@ function signup({ firstName, lastName, email, role, password }, cy) {
 }
 
 function login({ email, password }, cy) {
+  cy.intercept('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyBiylN50xSWKqsN9mqCVWLOYj9Bwfle_6c').as('login')
   cy.findByPlaceholder("Enter your email address").type(email);
   cy.findByPlaceholder("Enter your password").type(password);
   cy.contains("button", "Sign In").click();
-  cy.wait(2000)
+  cy.wait('@login')
 }
 
 module.exports = { signup, login };
