@@ -1,6 +1,7 @@
-# Getting Started with Create React App
+# The concept of a web platform for training aspiring journalists (React App) :disguised_face:
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The purpose of the work was to create a platform for publishing and disseminating the work of journalists with opportunities for further employment. The developed software product is a web application that helps to improve the skills and employment of novice journalists, and employers to hire good specialists.
+The software product is implemented in Visual Studio Code using the TypeScript programming language. The database and hosting was created using the Firebase platform.
 
 ## Available Scripts
 
@@ -17,17 +18,11 @@ You will also see any lint errors in the console.
 ### `yarn test`
 
 Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `yarn build`
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 ### `yarn eject`
 
@@ -39,8 +34,16 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+### `yarn cypress`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+This script will run end-to-end tests written on Cypress.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### `yarn ci`
+
+Script which install packages based on the lock-file.
+
+## Hosting
+Hosting was implemented using the Firebase platform.
+Open [https://myapp-44173.web.app/](https://myapp-44173.web.app/) to view it in the browser.
+
+
