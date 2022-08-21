@@ -1,4 +1,4 @@
-# The concept of a web platform for training aspiring journalists (React App)
+# The concept of a web platform for training aspiring journalists (React App) :disguised_face:
 
 The purpose of the work was to create a platform for publishing and disseminating the work of journalists with opportunities for further employment. The developed software product is a web application that helps to improve the skills and employment of novice journalists, and employers to hire good specialists.
 The software product is implemented in Visual Studio Code using the TypeScript programming language. The database and hosting was created using the Firebase platform.
@@ -43,7 +43,7 @@ This script will run end-to-end tests written on Cypress.
 Script which install packages based on the lock-file.
 
 ## Hosting
-Рosting was implemented using the Firebase platform.
+Hosting was implemented using the Firebase platform.
 Open [https://myapp-44173.web.app/](https://myapp-44173.web.app/) to view it in the browser.
 
 
