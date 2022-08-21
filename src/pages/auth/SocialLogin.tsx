@@ -1,11 +1,5 @@
 import { useState } from "react";
-import {
-  Box,
-  Flex,
-  Text,
-  IconButton,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Flex, Text, IconButton, useToast } from "@chakra-ui/react";
 import { ReactComponent as GoogleLogo } from "assets/img/icons/google-icon.svg";
 import { useHistory } from "react-router-dom";
 import { setAuth } from "service/authSlice";
@@ -24,9 +18,7 @@ import {
 } from "firebase/auth";
 
 const SocialLogin = () => {
-  const [userWithoutRole, setUserWithoutRole] = useState<User | null>(
-    null
-  );
+  const [userWithoutRole, setUserWithoutRole] = useState<User | null>(null);
   const history = useHistory();
   const dispatch = useDispatch();
   const toast = useToast();
@@ -49,19 +41,22 @@ const SocialLogin = () => {
 
       dispatch(
         setAuth({
-          token: (user as any).accessToken ,
+          token: (user as any).accessToken,
           refreshToken: user.refreshToken,
           id: user.uid,
         })
       );
 
       if (!userCheck.exists() && user.email && user.displayName) {
-        setUserWithoutRole({
+        const newUser = {
           id: user.uid,
           firstName: user.displayName?.split(" ")[0],
           lastName: user.displayName?.split(" ")[1],
           email: user.email,
-        });
+        };
+
+        await setUserWithoutRole(newUser);
+        dispatch(setUser(newUser));
       } else {
         await onValue(userRef, (snapshot) => {
           dispatch(setUser(snapshot.val()));
@@ -110,7 +105,7 @@ const SocialLogin = () => {
             _hover={{ bg: "grey.100" }}
             fontWeight="normal"
             as="button"
-            onClick={() => socialLogin('google')}
+            onClick={() => socialLogin("google")}
           />
 
           <IconButton
@@ -122,7 +117,7 @@ const SocialLogin = () => {
             icon={<FacebookLogo />}
             fontWeight="normal"
             as="button"
-            onClick={() => socialLogin('facebook')}
+            onClick={() => socialLogin("facebook")}
           />
         </Flex>
       </Box>
