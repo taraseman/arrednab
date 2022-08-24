@@ -19,7 +19,6 @@ import { useAppDispatch } from "hooks/redux";
 import { ReactComponent as Logo } from "assets/img/logo.svg";
 import { ReactComponent as ArrowRight } from "assets/img/icons/arrow-right.svg";
 import { useState } from "react";
-import Weather from "components/Weather";
 
 interface IMenuItem {
   path: string;
@@ -173,9 +172,6 @@ function LeftMenu() {
         w="100%"
         justifyContent="center"
       >
-        <Box pt="500px">
-          <Weather />
-        </Box>
       </Flex>
     </Box>
   );
