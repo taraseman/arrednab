@@ -1,6 +1,6 @@
 import reducer, { setUser, resetUser } from "service/userSlice";
 import { User } from "types/user-types";
-import { userMock } from "../mocks";
+import { userMock } from "../mocks/mocks";
 
 describe("user", () => {
   let user: User;

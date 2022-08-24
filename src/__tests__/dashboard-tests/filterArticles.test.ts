@@ -1,6 +1,6 @@
 import { filterArticles } from "pages/dashboard/Dashboard";
 import { Article } from "types/article-types";
-import { articlesMock } from "../mocks";
+import { articlesMock } from "../mocks/mocks";
 
 describe("Filter articles", () => {
   let articles: Article[];
