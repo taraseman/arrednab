@@ -6,11 +6,11 @@ import LeftMenu from "components/menu/Menu";
 
 import PageLoading from "components/loading/page-loading";
 
-const Login = lazy(() => import("pages/auth/login"));
+const Login = lazy(() => import("pages/auth/LoginPage"));
 const TermsPolicy = lazy(() => import("pages/TermsPolicy"));
-const PasswordRecovery = lazy(() => import("pages/auth/password-recovery"));
+const PasswordRecovery = lazy(() => import("pages/auth/PasswordRecovery"));
 const Page404 = lazy(() => import("pages/Page404"));
-const SignUp = lazy(() => import("./pages/auth/signup"));
+const SignUp = lazy(() => import("pages/auth/SignupPage"));
 const PageRoutes = lazy(() => import("./PageRoutes"));
 
 function Routes() {

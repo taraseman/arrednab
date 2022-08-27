@@ -243,6 +243,7 @@ const SignUp = () => {
                     ml="1"
                     as={RouterLink}
                     to="/terms-policy"
+                    target="_blank"
                     textAlign="right"
                     fontSize="md"
                     color="blue.500"
