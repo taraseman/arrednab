@@ -19,10 +19,6 @@ function PageRoutes() {
       <ProtectedRoute path='/dashboard/:id' exact>
         <ArticlePreview />
       </ProtectedRoute>
-      
-      {/* <ProtectedRoute path="/settings" exact>
-        <Settings />
-      </ProtectedRoute> */}
       <Redirect to="/error404" />
     </Switch>
   );

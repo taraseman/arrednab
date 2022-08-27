@@ -1,6 +1,6 @@
 /* eslint-disable testing-library/no-unnecessary-act */
 import { render, screen, act } from "utils/test-utils";
-import SignUp from "pages/auth/signup";
+import SignUp from "pages/auth/SignupPage";
 import user from "@testing-library/user-event";
 
 describe("login component", () => {
