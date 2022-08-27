@@ -5,7 +5,7 @@ import reducer, {
   Users,
   UpdateUser,
 } from "service/allUsersSlice";
-import { defaultUsersMock } from "../../mocks/mocks";
+import { defaultUsersMock } from "mocks/mocks";;
 
 describe("allUsersSlice", () => {
   let defaultUsers: Users;
