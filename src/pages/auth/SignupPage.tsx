@@ -119,7 +119,6 @@ const SignUp = () => {
         status: "success",
         description: "User registered successfully",
       });
-
       history.push("/login");
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
