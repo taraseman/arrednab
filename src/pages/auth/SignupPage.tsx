@@ -249,7 +249,7 @@ const SignUp = () => {
                     color="blue.500"
                     fontWeight="500"
                   >
-                    Terms and Policy
+                    Terms and Policy 
                   </Link>
                 </Flex>
                 <Button
