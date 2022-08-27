@@ -159,7 +159,7 @@ const Login = () => {
                     color="grey.300"
                     textDecoration="underline"
                   >
-                    Forgot Password
+                    Forgot your Password
                   </Link>
                   <Link
                     as={RouterLink}
