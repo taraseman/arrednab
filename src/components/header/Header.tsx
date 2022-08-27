@@ -18,6 +18,7 @@ import { useEffect } from "react";
 import { useAppDispatch } from "hooks/redux";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import getArticles from "service/get-data-fanctions/get-articles";
+import Weather from "components/Weather";
 
 const Header = () => {
   const dispatch = useAppDispatch();
@@ -50,7 +51,7 @@ const Header = () => {
         onClose={editUserModalDisclosure.onClose}
       />
       <Flex
-        justify="flex-end"
+        justify="space-between"
         px="34px"
         h="74px"
         bgColor="white"
@@ -59,35 +60,44 @@ const Header = () => {
         borderColor="grey.150"
         borderLeft="0"
       >
-        <Box>
+        <Weather />
+        <Flex alignItems="center">
+          <Box>
+            {user && users && (
+              <Avatar
+                mr="15px"
+                src={
+                  users[user?.id]?.photoUrl
+                    ? users[user?.id]?.photoUrl
+                    : DefaultAvatarSrc
+                }
+                sx={{ width: "48px", height: "48px", cursor: "pointer" }}
+              />
+            )}
+          </Box>
+
           {user && users && (
-            <Avatar
-              mr="15px"
-              src={
-                users[user?.id]?.photoUrl
-                  ? users[user?.id]?.photoUrl
-                  : DefaultAvatarSrc
-              }
-              sx={{ width: "48px", height: "48px", cursor: "pointer" }}
-            />
+            <Menu>
+              <MenuButton
+                as={Button}
+                variant="link"
+                rightIcon={<ChevronDown />}
+                _hover={{ color: "primary.500" }}
+                data-testid="menu-button-header"
+              >
+                {users[user?.id].firstName} {users[user?.id].lastName}
+              </MenuButton>
+              <MenuList>
+                <MenuItem
+                  onClick={editUserModalDisclosure.onOpen}
+                  data-testid="menu-button-edit-option"
+                >
+                  Edit
+                </MenuItem>
+              </MenuList>
+            </Menu>
           )}
-        </Box>
-        {user && users && (
-          <Menu>
-            <MenuButton
-              as={Button}
-              variant="link"
-              rightIcon={<ChevronDown />}
-              _hover={{ color: "primary.500" }}
-              data-testid="menu-button-header"
-            >
-              {users[user?.id].firstName} {users[user?.id].lastName}
-            </MenuButton>
-            <MenuList>
-              <MenuItem onClick={editUserModalDisclosure.onOpen} data-testid="menu-button-edit-option">Edit</MenuItem>
-            </MenuList>
-          </Menu>
-        )}
+        </Flex>
       </Flex>
     </>
   );

@@ -5,33 +5,12 @@ import reducer, {
   Users,
   UpdateUser,
 } from "service/allUsersSlice";
+import { defaultUsersMock } from "mocks/mocks";;
 
 describe("allUsersSlice", () => {
   let defaultUsers: Users;
   beforeEach(() => {
-    defaultUsers = {
-      a: {
-        id: "a",
-        photoUrl: "fhf",
-        firstName: "Ivan",
-        lastName: "Ivan",
-        email: "se@gamil.com",
-      },
-      b: {
-        id: "b",
-        photoUrl: "fhf",
-        firstName: "John",
-        lastName: "John",
-        email: "john@gamil.com",
-      },
-      c: {
-        id: "c",
-        photoUrl: "fhf",
-        firstName: "Mary",
-        lastName: "Mary",
-        email: "mary@gamil.com",
-      },
-    };
+    defaultUsers = { ...defaultUsersMock };
   });
   it("should return the initial state", () => {
     expect(reducer(undefined, { type: undefined })).toEqual({
@@ -43,7 +22,7 @@ describe("allUsersSlice", () => {
       defaultUsers
     );
   });
-  it("should handle restUsers", () => {
+  it("should handle resetUsers", () => {
     expect(reducer({ users: defaultUsers }, resetUsers()).users).toEqual(null);
   });
   it("should only field value which we need", () => {

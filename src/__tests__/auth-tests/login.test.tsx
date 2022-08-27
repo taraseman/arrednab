@@ -1,6 +1,6 @@
 /* eslint-disable testing-library/no-unnecessary-act */
 import { render, screen, act } from "utils/test-utils";
-import Login from "pages/auth/login";
+import Login from "pages/auth/LoginPage";
 import user from '@testing-library/user-event';
 
 

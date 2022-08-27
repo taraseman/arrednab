@@ -119,7 +119,6 @@ const SignUp = () => {
         status: "success",
         description: "User registered successfully",
       });
-
       history.push("/login");
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
@@ -243,12 +242,13 @@ const SignUp = () => {
                     ml="1"
                     as={RouterLink}
                     to="/terms-policy"
+                    target="_blank"
                     textAlign="right"
                     fontSize="md"
                     color="blue.500"
                     fontWeight="500"
                   >
-                    Terms and Policy
+                    Terms and Policy 
                   </Link>
                 </Flex>
                 <Button

@@ -1,58 +1,11 @@
 import { filterArticles } from "pages/dashboard/Dashboard";
 import { Article } from "types/article-types";
+import { articlesMock } from "mocks/mocks";
 
 describe("Filter articles", () => {
   let articles: Article[];
   beforeEach(() => {
-    articles = [
-      {
-        id: "1a",
-        authorId: "1author",
-        title: "title1",
-        description: "description1",
-        imageUrl: "url1",
-        category: "other",
-        created: 1660672448094,
-        comments: [
-          {
-            id: "c11",
-            created: "1660672448094",
-            authorId: "1aa",
-            message: "fkkfkkdkfkd",
-          },
-        ],
-      },
-      {
-        id: "1a",
-        authorId: "1author",
-        title: "title2",
-        description: "description2",
-        imageUrl: "url1",
-        category: "science",
-        created: 1660672431208,
-        comments: [],
-      },
-      {
-        id: "1a",
-        authorId: "1author",
-        title: "title3",
-        description: "description3",
-        imageUrl: "url1",
-        category: "studying",
-        created: 1660672382768,
-        comments: [],
-      },
-      {
-        id: "1a",
-        authorId: "1author",
-        title: "title4",
-        description: "description4",
-        imageUrl: "url1",
-        category: "studying",
-        created: 1660672372939,
-        comments: [],
-      },
-    ];
+    articles = [...articlesMock];
   });
 
   it("without filters all articles are in descending order of time", () => {
@@ -107,5 +60,3 @@ describe("Filter articles", () => {
     );
   });
 });
-
-

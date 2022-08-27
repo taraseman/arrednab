@@ -25,7 +25,7 @@ const Weather = () => {
 
   return (
     <Flex w="186px" h="60px" alignItems="center" justifyContent="center">
-      <Text fontSize="large" fontWeight="500">
+      <Text fontSize="md" fontWeight="500">
         {isLoading && <Skeleton height="20px" w="200px" />}
         {data && (
           <>

@@ -1,15 +1,12 @@
 import reducer, { setUser, resetUser } from "service/userSlice";
 import { User } from "types/user-types";
+import { userMock } from "mocks/mocks";;
 
 describe("user", () => {
   let user: User;
   beforeEach(() => {
     user = {
-      id: "a",
-      photoUrl: "fhf",
-      firstName: "Ivan",
-      lastName: "Ivan",
-      email: "se@gamil.com",
+      ...userMock,
     };
   });
   it("should return the initial state", () => {
