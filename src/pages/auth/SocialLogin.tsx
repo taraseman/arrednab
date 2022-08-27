@@ -115,7 +115,6 @@ const SocialLogin = () => {
             as="button"
             onClick={() => socialLogin('google')}
           />
-
           <IconButton
             w="70px"
             boxShadow="0px 1px 4px rgba(0, 0, 0, 0.1)"
