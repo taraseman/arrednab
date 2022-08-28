@@ -8,7 +8,6 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
 } from "@chakra-ui/react";
-import { useTranslation } from "react-i18next";
 import { FirebaseError } from "@firebase/util";
 
 interface Props {
@@ -26,7 +25,6 @@ function ConfirmDeleteModal({
   title,
   successMessage,
 }: Props) {
-  const { t } = useTranslation();
   const toast = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
@@ -82,7 +80,7 @@ function ConfirmDeleteModal({
             color="grey.400"
             ref={cancelRef}
           >
-            {t("Cancel")}
+            Cancel
           </Button>
 
           <Button
@@ -94,7 +92,7 @@ function ConfirmDeleteModal({
             isDisabled={isLoading}
             onClick={handleDeleteAction}
           >
-            {t("Delete")}
+            Delete
           </Button>
         </Flex>
       </AlertDialogContent>
