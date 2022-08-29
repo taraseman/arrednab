@@ -4,10 +4,6 @@ import ProtectedRoute from 'components/protected-route/protected-route';
 const Dashboard = lazy(()=> import('pages/dashboard/Dashboard'))
 const ArticlePreview = lazy(()=> import('pages/dashboard/ArticlePreview'))
 
-
-
-
-
 function PageRoutes() {
   const location = useLocation();
 
