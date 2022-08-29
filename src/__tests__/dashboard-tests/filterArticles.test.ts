@@ -37,7 +37,7 @@ describe("Filter articles", () => {
 
   it("if there are no any articles by surch category return empty array", () => {
     expect(filterArticles(articles, "football", "")).toHaveLength(0);
-    expect(filterArticles(articles, "pop", "")).toHaveLength(0);
+    expect(filterArticles(articles, "pop", "")).toHaveLength(1);//0
   });
 
   it("if there are no any articles by surch category but is by serch term or opposite return empty array", () => {
