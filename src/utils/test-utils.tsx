@@ -7,7 +7,7 @@ import { render, RenderOptions } from "@testing-library/react";
 import { Router } from "react-router-dom";
 import history from "utils/history";
 
-const AllTheProviders: FC<{ children: React.ReactNode }> = ({ children }) => {
+const AllTheProviders: FC<{ children: React.ReactNode | any }> = ({ children }) => {
   return (
     <ChakraProvider theme={theme}>
       <Provider store={store}>
