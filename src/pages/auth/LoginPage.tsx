@@ -130,7 +130,7 @@ const Login = () => {
             </Heading>
 
             <Text color="grey.300" mb="47px">
-              Sign in to manage your account.
+              Sign in to manage your account, dude.
             </Text>
 
             <FormProvider {...form}>
