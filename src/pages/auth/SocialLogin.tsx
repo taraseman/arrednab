@@ -48,14 +48,15 @@ const SocialLogin = () => {
       );
 
       if (!userCheck.exists() && user.email && user.displayName) {
+        const [firstName, lastName] = user.displayName?.split(" ");
         const newUser = {
           id: user.uid,
-          firstName: user.displayName?.split(" ")[0],
-          lastName: user.displayName?.split(" ")[1],
+          firstName,
+          lastName,
           email: user.email,
         };
 
-        await setUserWithoutRole(newUser);
+        setUserWithoutRole(newUser);
         dispatch(setUser(newUser));
       } else {
         await onValue(userRef, (snapshot) => {
