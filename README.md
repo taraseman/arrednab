@@ -3,6 +3,41 @@
 The purpose of the work was to create a platform for publishing and disseminating the work of journalists with opportunities for further employment. The developed software product is a web application that helps to improve the skills and employment of novice journalists, and employers to hire good specialists.
 The software product is implemented in Visual Studio Code using the TypeScript programming language. The database and hosting was created using the Firebase platform.
 
+## Technical requirements (Stack)
+1. TypeScript
+2. Framework: React
+   - Use functional components.
+   - Use functional component hooks.
+   - Use redux state.
+   - Use redux form (react hook forms).
+   - Use react router (i.e. get params from route).
+   - Use Typescript.
+   - Use Axios for fetch requests or some other tool (you could use some json generator or some real time db).
+   - Prevent component render without data.
+   - Don't forget to create interfaces, 'any' type is unacceptable.
+   - Use a styling library (Chakra UI).
+   - Use middlewares.
+3. PWA requirements
+   - App should cache all static resources with service worker
+   - App should continue to work when there's no internet connection, displaing latest fetched chat information
+   - After re-connection to internet, all chat data should be updated
+4. Testing
+   - Jest/Jasmine for Unit Tests
+   - Cypress/Protractor for E2E Tests
+5. CI/CD
+
+## Functional requirements
+1. Sign in/Signup/Reset Password
+  - Login / logout flow via email and password
+  - Login using Google/Facebook oAuth
+  - Sign up flow using email and password, name, age and etc.
+  - Reset / forgot password flow
+2. Dashboard
+ - Functionality to add/change/remove "items" on Dashboard
+ - Populate a list of items which can be sorted and filtered
+ - The widget can display real-time weather data (or some other real-time data from API)
+ 3. Profile
+ - 	Populate our personal data. You can edit it. Also, the user should be able to update the profile image and password
 ## Available Scripts
 
 In the project directory, you can run:
