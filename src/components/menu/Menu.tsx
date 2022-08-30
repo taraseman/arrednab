@@ -8,6 +8,7 @@ import {
   Flex,
   useMediaQuery,
   IconButton,
+  useToast,
 } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
 import styled from "@emotion/styled";
@@ -15,10 +16,12 @@ import { ReactComponent as DashboardIcon } from "assets/img/icons/dashboard.svg"
 import { ReactComponent as LogoutIcon } from "assets/img/icons/logout.svg";
 import { resetAuth } from "service/authSlice";
 import { useHistory } from "react-router";
+import { FirebaseError } from "@firebase/util";
 import { useAppDispatch } from "hooks/redux";
 import { ReactComponent as Logo } from "assets/img/logo.svg";
 import { ReactComponent as ArrowRight } from "assets/img/icons/arrow-right.svg";
 import { useState } from "react";
+import { signOut, getAuth } from "firebase/auth";
 
 interface IMenuItem {
   path: string;
@@ -89,12 +92,27 @@ function LeftMenu() {
   const history = useHistory();
   const [isMenuCollapsed, setIsMenuCollapsed] = useState(true);
   const [isSmallScreen] = useMediaQuery("(max-width: 800px)");
+  const [isLogouting, setIsLogouting] = useState(false);
+  const auth = getAuth();
+  const toast = useToast();
 
-  const logout = () => {
-    dispatch(resetAuth());
-    sessionStorage.clear();
-    localStorage.clear();
-    history.push("/login");
+  const logout = async () => {
+    setIsLogouting(true);
+    try {
+      await signOut(auth);
+
+      dispatch(resetAuth());
+      sessionStorage.clear();
+      localStorage.clear();
+      history.push("/login");
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError)
+        toast({
+          status: "error",
+          description: error.message,
+        });
+    }
+    setIsLogouting(false);
   };
 
   return (
@@ -158,6 +176,7 @@ function LeftMenu() {
           >
             <Button
               onClick={logout}
+              isLoading={isLogouting}
               leftIcon={<LogoutIcon />}
               w="100%"
               bgColor="grey.100"
@@ -171,8 +190,7 @@ function LeftMenu() {
         display={isSmallScreen && isMenuCollapsed ? "none" : "flex"}
         w="100%"
         justifyContent="center"
-      >
-      </Flex>
+      ></Flex>
     </Box>
   );
 }
