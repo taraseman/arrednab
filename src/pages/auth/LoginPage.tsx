@@ -149,7 +149,7 @@ const Login = () => {
                   name="password"
                   label="Password"
                   type="password"
-                  placeholder="Enter your passwor"
+                  placeholder="Enter your password"
                 />
                 <HStack justify="space-between" alignSelf="stretch">
                   <Link
