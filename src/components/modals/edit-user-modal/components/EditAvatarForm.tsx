@@ -52,6 +52,7 @@ const EditAvatarForm = ({ onClose }: Props) => {
       if (file) {
         const imageName = uuidv4() + "." + file?.name?.split(".")?.pop();
         const url = await uploadFile(file, `profile/${user.id}/${imageName}`);
+        
         setPhotoUrl(url as string);
 
         await updateDataBaseData(
