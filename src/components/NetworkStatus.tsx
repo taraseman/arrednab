@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 import getArticles from "service/get-data-fanctions/get-articles";
 import getUsers from "service/get-data-fanctions/get-users";
