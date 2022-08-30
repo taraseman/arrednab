@@ -43,7 +43,7 @@ const NetworkStatus = () => {
     });
   });
 
-  return <Box />;
+  return <></>;
 };
 
 export default NetworkStatus;

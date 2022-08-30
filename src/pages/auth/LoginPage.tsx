@@ -98,17 +98,17 @@ const Login = () => {
     mode: "onChange",
   });
 
-  const firstMount = useRef<boolean>(true);
+  // const firstMount = useRef<boolean>(true);
 
-  useEffect(() => {
-    // hack to validate autofill values
-    if (!firstMount.current) {
-      return;
-    } else {
-      firstMount.current = false;
-    }
-    setTimeout(() => form.reset({}, { keepValues: true }), 0);
-  }, [form]);
+  // useEffect(() => {
+  //   // hack to validate autofill values
+  //   if (!firstMount.current) {
+  //     return;
+  //   } else {
+  //     firstMount.current = false;
+  //   }
+  //   setTimeout(() => form.reset({}, { keepValues: true }), 0);
+  // }, [form]);
 
   return (
     <Box h="100vh" w="100%" bg="white">
@@ -149,7 +149,7 @@ const Login = () => {
                   name="password"
                   label="Password"
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder="Enter your passwor"
                 />
                 <HStack justify="space-between" alignSelf="stretch">
                   <Link
